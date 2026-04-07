@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Created-By: 11.0.12 (Oracle Corporation)
+Class-Path: my-library.jar
+Main-Class: principal/Principal
