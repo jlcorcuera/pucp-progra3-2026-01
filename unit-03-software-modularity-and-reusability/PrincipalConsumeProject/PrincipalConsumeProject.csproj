@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+	<ProjectReference Include="/mnt/data/repository/PUCP/pucp-progra3-2026-01/unit-03-software-modularity-and-reusability/Matematicas/Matematicas.csproj"/>
+  </ItemGroup>
+
+
+</Project>
