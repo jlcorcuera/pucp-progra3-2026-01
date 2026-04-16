@@ -2,9 +2,9 @@ package pe.edu.pucp.progra3.softprog;
 
 import java.sql.*;
 
-public class MainTryWithResources {
+public class Main {
 
-    static String host = "my-softprog-rds.ctjga6kjqpgm.us-east-1.rds.amazonaws.com";
+    static String host = "URL HERE";
     static Integer port = 3306;
     static String username = "admin";
     static String password = "Admin1234*-";

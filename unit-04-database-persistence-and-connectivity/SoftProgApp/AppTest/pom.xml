@@ -5,11 +5,19 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>pe.edu.pucp.progra3</groupId>
-        <artifactId>SoftProg</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <artifactId>SoftProgApp</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>AppTest</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <version>9.6.0</version>
+        </dependency>
+    </dependencies>
 
     <properties>
         <maven.compiler.source>25</maven.compiler.source>
