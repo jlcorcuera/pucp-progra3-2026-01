@@ -4,7 +4,7 @@ import java.sql.*;
 
 public class MainTryWithResources {
 
-    static String host = "URL HERE";
+    static String host = "URL HERE 1";
     static Integer port = 3306;
     static String username = "admin";
     static String password = "Admin1234*-";
