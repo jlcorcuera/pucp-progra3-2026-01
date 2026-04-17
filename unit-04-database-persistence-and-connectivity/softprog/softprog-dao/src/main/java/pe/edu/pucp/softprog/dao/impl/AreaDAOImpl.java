@@ -12,7 +12,7 @@ public class AreaDAOImpl implements AreaDAO {
     @Override
     public List<Area> listAll() {
         List<Area> list = new ArrayList<>();
-        String sql = "select id, nombre, activo from AREA where activo = 1";
+        String sql = "select id_area, nombre, activa from area where activa = 1";
         try(Connection connection = DBManager.getInstance().getConnection();
             Statement stm = connection.createStatement();
             ResultSet rs = stm.executeQuery(sql)) {
@@ -31,7 +31,7 @@ public class AreaDAOImpl implements AreaDAO {
 
     @Override
     public Area load(Integer id) {
-        String sql = "select id, nombre, activo from AREA where id = ?";
+        String sql = "select id, nombre, activa from area where id_area = ?";
         try(Connection connection = DBManager.getInstance().getConnection();
             PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setInt(1, id);
@@ -53,7 +53,7 @@ public class AreaDAOImpl implements AreaDAO {
     @Override
     public Area save(Area area) {
         area.setActive(true);
-        String sql = "insert into AREA (nombre, activo) values (?, ?)";
+        String sql = "insert into area (nombre, activa) values (?, ?)";
         try(Connection connection = DBManager.getInstance().getConnection();
             PreparedStatement pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             pstmt.setString(1, area.getName());
@@ -75,7 +75,7 @@ public class AreaDAOImpl implements AreaDAO {
 
     @Override
     public Area update(Area area) {
-        String sql = "update AREA set nombre = ?, activo = ? where id = ?";
+        String sql = "update area set nombre = ?, activa = ? where id_area = ?";
         try(Connection connection = DBManager.getInstance().getConnection();
             PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, area.getName());
@@ -92,7 +92,7 @@ public class AreaDAOImpl implements AreaDAO {
     public void remove(Area area) {
         // TODO: please implement logical removal
         area.setActive(false);
-        String sql = "update AREA set activo = ? where id = ?";
+        String sql = "update area set activa = ? where id_area = ?";
         try(Connection connection = DBManager.getInstance().getConnection();
             PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setBoolean(1, area.getActive());
