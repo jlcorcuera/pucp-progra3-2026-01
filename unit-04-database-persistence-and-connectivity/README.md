@@ -18,6 +18,11 @@ This repository covers the core techniques for connecting an application to a Da
 *   **Connectivity:** JDBC
 *   **IDE:** IntelliJ IDEA
 
+## Directory Structure
+*   **`db_scripts`**: Contains the SQL scripts and database backups required to provision the `softprog` database schema.
+*   **`SoftProgApp`**: A foundational Java project demonstrating the basics of database connectivity and query execution.
+*   [**`softprog`**](./softprog): A comprehensive project showcasing the implementation of business logic, including robust transaction handling and structured exception propagation across architectural layers.
+
 ## Configuring IntelliJ to work properly with Maven
 
 > [!WARNING]
