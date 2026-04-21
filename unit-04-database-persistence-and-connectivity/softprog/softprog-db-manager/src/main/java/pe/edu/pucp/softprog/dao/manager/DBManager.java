@@ -22,7 +22,7 @@ public class DBManager {
             InputStream inputStream = getClass().getClassLoader().getResourceAsStream(DB_CREDENTIALS_FILE);
             properties.load(inputStream);
         }catch(IOException ex){
-            System.out.println("Error when loading properties file: " + ex.getMessage());
+            throw new RuntimeException("Error when loading properties file: " + ex.getMessage());
         }
         String host = properties.getProperty("host");
         String port = properties.getProperty("port");
