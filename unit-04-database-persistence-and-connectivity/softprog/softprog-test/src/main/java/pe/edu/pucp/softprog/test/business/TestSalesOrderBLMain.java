@@ -39,7 +39,7 @@ public class TestSalesOrderBLMain {
         line2.setActive(true);
         line2.setSalesOrder(salesOrder);
         line2.setProduct(product2);
-        line2.setQuantity(2);
+        line2.setQuantity(3);
         line2.setSubtotal(line2.getQuantity() * product2.getPrice());
         total = total + line2.getSubtotal();
 
