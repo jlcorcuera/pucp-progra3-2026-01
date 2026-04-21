@@ -4,11 +4,12 @@ import pe.edu.pucp.softprog.dao.AreaDAO;
 import pe.edu.pucp.softprog.dao.impl.AreaDAOImpl;
 import pe.edu.pucp.softprog.dao.model.Area;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class TestAreaDAOMain {
 
-    public static void main(String [] args) {
+    public static void main(String [] args) throws SQLException {
         AreaDAO areaDAO = new AreaDAOImpl();
         Area newArea = new Area("New Area 1");
 

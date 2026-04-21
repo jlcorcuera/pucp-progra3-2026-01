@@ -10,7 +10,7 @@ import java.util.List;
 
 public class AreaDAOImpl implements AreaDAO {
     @Override
-    public List<Area> listAll() {
+    public List<Area> listAll() throws SQLException {
         List<Area> list = new ArrayList<>();
         String sql = "select id_area, nombre, activa from area where activa = 1";
         try(Connection connection = DBManager.getInstance().getConnection();
@@ -24,14 +24,12 @@ public class AreaDAOImpl implements AreaDAO {
                     list.add(area);
                 }
                 return list;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
     }
 
     @Override
-    public Area load(Integer id) {
-        String sql = "select id, nombre, activa from area where id_area = ?";
+    public Area load(Integer id) throws SQLException {
+        String sql = "select id_area, nombre, activa from area where id_area = ?";
         try(Connection connection = DBManager.getInstance().getConnection();
             PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setInt(1, id);
@@ -44,14 +42,12 @@ public class AreaDAOImpl implements AreaDAO {
                     return area;
                 }
             }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
         return null;
     }
 
     @Override
-    public Area save(Area area) {
+    public Area save(Area area) throws SQLException {
         area.setActive(true);
         String sql = "insert into area (nombre, activa) values (?, ?)";
         try(Connection connection = DBManager.getInstance().getConnection();
@@ -74,7 +70,7 @@ public class AreaDAOImpl implements AreaDAO {
     }
 
     @Override
-    public Area update(Area area) {
+    public Area update(Area area) throws SQLException {
         String sql = "update area set nombre = ?, activa = ? where id_area = ?";
         try(Connection connection = DBManager.getInstance().getConnection();
             PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -89,7 +85,7 @@ public class AreaDAOImpl implements AreaDAO {
     }
 
     @Override
-    public void remove(Area area) {
+    public void remove(Area area) throws SQLException {
         // TODO: please implement logical removal
         area.setActive(false);
         String sql = "update area set activa = ? where id_area = ?";
@@ -97,8 +93,6 @@ public class AreaDAOImpl implements AreaDAO {
             PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setBoolean(1, area.getActive());
             pstmt.setInt(2, area.getId());
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
     }
 }

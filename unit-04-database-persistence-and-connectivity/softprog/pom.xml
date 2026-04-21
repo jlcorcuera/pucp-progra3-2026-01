@@ -13,6 +13,7 @@
         <module>softprog-dao</module>
         <module>softprog-db-manager</module>
         <module>softprog-test</module>
+        <module>softprog-business-logic</module>
     </modules>
 
     <properties>

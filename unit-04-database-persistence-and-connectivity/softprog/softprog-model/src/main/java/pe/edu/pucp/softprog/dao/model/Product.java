@@ -6,6 +6,15 @@ public class Product {
     private String unitMeasurement;
     private Double price;
     private Boolean active;
+    private Integer stock;
+
+    public Integer getStock() {
+        return stock;
+    }
+
+    public void setStock(Integer stock) {
+        this.stock = stock;
+    }
 
     public Integer getId() {
         return id;

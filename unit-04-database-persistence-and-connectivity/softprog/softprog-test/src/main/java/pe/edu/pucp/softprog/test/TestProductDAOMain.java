@@ -4,9 +4,11 @@ import pe.edu.pucp.softprog.dao.ProductDAO;
 import pe.edu.pucp.softprog.dao.impl.ProductDAOImpl;
 import pe.edu.pucp.softprog.dao.model.Product;
 
+import java.sql.SQLException;
+
 public class TestProductDAOMain {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         ProductDAO productDAO = new ProductDAOImpl();
         Product product = productDAO.load(3);
         System.out.println(product.getName());

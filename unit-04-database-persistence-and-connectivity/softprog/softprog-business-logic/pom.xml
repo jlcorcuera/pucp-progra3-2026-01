@@ -9,35 +9,26 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>softprog-test</artifactId>
+    <artifactId>softprog-business-logic</artifactId>
 
-    <dependencies>
-        <dependency>
-            <groupId>pe.edu.pucp.softprog</groupId>
-            <artifactId>softprog-business-logic</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>pe.edu.pucp.softprog</groupId>
-            <artifactId>softprog-dao</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>pe.edu.pucp.softprog</groupId>
-            <artifactId>softprog-model</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>pe.edu.pucp.softprog</groupId>
-            <artifactId>softprog-business-logic</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-    </dependencies>
     <properties>
         <maven.compiler.source>25</maven.compiler.source>
         <maven.compiler.target>25</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+    <dependencies>
+        <dependency>
+            <groupId>pe.edu.pucp.softprog</groupId>
+            <artifactId>softprog-model</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>pe.edu.pucp.softprog</groupId>
+            <artifactId>softprog-dao</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
 
 </project>
