@@ -59,7 +59,13 @@ Serves as an integration and entry-point layer to test the implemented component
 
 - **Java Development Kit (JDK):** Version 25 or higher.
 - **Apache Maven:** 3.8+ recommended to build the multi-module project.
-- **Database:** Ensure the relational database (e.g., MySQL) is correctly configured with the required schema and credentials specified in the configuration files.
+- **Database:** Ensure the relational database (e.g., MySQL) is correctly configured with the required schema.
+
+## Database Configuration
+
+Before building or running the application, you **must update your database connection credentials**. Please open the following file and replace the placeholder values with your specific database URL, username, and password:
+
+`softprog-db-manager/src/main/resources/db.properties`
 
 ## Build and Execution
 
