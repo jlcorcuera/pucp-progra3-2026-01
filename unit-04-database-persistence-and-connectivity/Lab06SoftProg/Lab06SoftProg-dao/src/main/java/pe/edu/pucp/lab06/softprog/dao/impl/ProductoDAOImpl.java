@@ -21,15 +21,23 @@ public class ProductoDAOImpl implements ProductoDAO {
     }
 
     @Override
+<<<<<<< HEAD
     public Producto load(Integer id) throws Exception {
+=======
+    public Producto load(Integer id) {
+>>>>>>> 4015b73e8b8686efecc5246e9bc696a45b4c1a97
         String sql = """
                 select id_producto, nombre, unidad_medida, precio, activo, stock 
                 from producto where id_producto = ?
                 """;
+<<<<<<< HEAD
         // NO TENEMOS QUE PONER LA CONNECTION DENTRO DEL TRY-WITH-RESOURCES
         // DE LO CONTRARIO LA CONEXION SE CERRARA
         Connection connection = TransactionContext.getConnection();
         try(
+=======
+        try(Connection connection = TransactionContext.getConnection();
+>>>>>>> 4015b73e8b8686efecc5246e9bc696a45b4c1a97
             PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
             try(ResultSet rs = stmt.executeQuery()) {
@@ -51,7 +59,11 @@ public class ProductoDAOImpl implements ProductoDAO {
     }
 
     @Override
+<<<<<<< HEAD
     public Producto update(Producto producto) throws Exception {
+=======
+    public Producto update(Producto producto) {
+>>>>>>> 4015b73e8b8686efecc5246e9bc696a45b4c1a97
         String sql = """
                 update producto set nombre = ?, 
                                     unidad_medida = ?, 
@@ -60,10 +72,14 @@ public class ProductoDAOImpl implements ProductoDAO {
                                     stock = ? 
                 where id_producto = ?
                 """;
+<<<<<<< HEAD
         // NO TENEMOS QUE PONER LA CONNECTION DENTRO DEL TRY-WITH-RESOURCES
         // DE LO CONTRARIO LA CONEXION SE CERRARA
         Connection connection = TransactionContext.getConnection();
         try(
+=======
+        try(Connection connection = TransactionContext.getConnection();
+>>>>>>> 4015b73e8b8686efecc5246e9bc696a45b4c1a97
             PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, producto.getNombre());
             stmt.setString(2, producto.getUnidadMedida());

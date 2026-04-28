@@ -9,6 +9,7 @@ import java.sql.*;
 
 public class OrdenVentaDAOImplV2 implements OrdenVentaDAO {
     @Override
+<<<<<<< HEAD
     public OrdenVenta save(OrdenVenta ordenVenta) throws Exception {
         String sql = """
                 {call INSERTAR_ORDEN_VENTA(?, ?, ?, ?)}
@@ -18,6 +19,15 @@ public class OrdenVentaDAOImplV2 implements OrdenVentaDAO {
         Connection connection = TransactionContext.getConnection();
         try(
             CallableStatement cstmt = connection.prepareCall(sql)) {
+=======
+    public OrdenVenta save(OrdenVenta ordenVenta) {
+        String sql = """
+                {call INSERTAR_ORDEN_VENTA(?, ?, ?, ?)}
+        """;
+        try(Connection connection = TransactionContext.getConnection();
+            CallableStatement cstmt = connection.prepareCall(sql)) {
+
+>>>>>>> 4015b73e8b8686efecc5246e9bc696a45b4c1a97
             cstmt.registerOutParameter(1, Types.INTEGER);
 
             cstmt.setInt(2, ordenVenta.getEmpleado().getId());

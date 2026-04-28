@@ -9,15 +9,24 @@ import java.sql.*;
 
 public class OrdenVentaDAOImpl implements OrdenVentaDAO {
     @Override
+<<<<<<< HEAD
     public OrdenVenta save(OrdenVenta ordenVenta) throws Exception {
+=======
+    public OrdenVenta save(OrdenVenta ordenVenta) {
+>>>>>>> 4015b73e8b8686efecc5246e9bc696a45b4c1a97
         String sql = """
                 insert into orden_venta(fid_empleado, fid_cliente, total, fecha_hora, activa)
                 values (?, ?, ?, ?, ?);
         """;
+<<<<<<< HEAD
         // NO TENEMOS QUE PONER LA CONNECTION DENTRO DEL TRY-WITH-RESOURCES
         // DE LO CONTRARIO LA CONEXION SE CERRARA
         Connection connection = TransactionContext.getConnection();
         try(PreparedStatement pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+=======
+        try(Connection connection = TransactionContext.getConnection();
+            PreparedStatement pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+>>>>>>> 4015b73e8b8686efecc5246e9bc696a45b4c1a97
             pstmt.setInt(1, ordenVenta.getEmpleado().getId());
             pstmt.setInt(2, ordenVenta.getCliente().getId());
             pstmt.setDouble(3, ordenVenta.getTotal());
