@@ -33,7 +33,7 @@ public class OrdenVentaDAOImpl implements OrdenVentaDAO {
             }
             String sqlLinea = """
                     insert into linea_orden_venta(fid_orden_venta, fid_producto, cantidad, subtotal, activa)
-                    values (?, ?, ?, ?)
+                    values (?, ?, ?, ?, ?)
                     """;
             try(PreparedStatement pstmtLinea = connection.prepareStatement(sqlLinea)) {
                 for(LineaOrdenVenta linea: ordenVenta.getDetalles()) {
