@@ -125,3 +125,6 @@ public SalesOrder create(SalesOrder salesOrder) throws BusinessLogicException {
 ```
 
 By delegating connection management to `TransactionContext`, the DAO layer remains unaware of the broader transaction scope. This allows the Business Logic layer to successfully orchestrate complex, multi-step workflows while maintaining ACID properties, ensuring that if any single step fails, the entire transaction is rolled back.
+
+> [!WARNING]
+> **Important DAO Rule:** When using the `TransactionContext`, individual DAO methods **MUST NOT** close the connection after their specific execution. Because the connection is managed by the ThreadLocal and shared across multiple DAO calls within the same transaction, closing it prematurely in a DAO will break the transaction and cause subsequent queries in the Business Logic layer to fail. The responsibility of closing the connection belongs strictly to the Business Logic layer, ideally inside a `finally` block.
