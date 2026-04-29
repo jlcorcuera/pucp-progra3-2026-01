@@ -86,3 +86,42 @@ Inside the `AppTest` module, you will find three main executables that illustrat
     }
     ```
 *   **`MainExampleResultset.java`**: Shows a practical use case by querying a hypothetical table (`categories`) and navigating through the returned `ResultSet` using a `while(rs.next())` loop. It extracts and prints data row by row, demonstrating how to access specific column values using their numeric position (e.g., `rs.getInt(1)`). It is important to note that JDBC column indexes start at `1`, rather than the standard `0`-based indexing customary in most Java data structures.
+
+## Transaction Management in Business Logic
+
+In real-world applications, operations often span multiple database queries that must succeed or fail as a single unit of work. The `softprog` project demonstrates this through the `TransactionContext` utility and its integration within the Business Logic layer.
+
+### The `TransactionContext` Utility
+Located in the `softprog-db-manager` module (`pe.edu.pucp.softprog.dao.transaction.TransactionContext`), this class is responsible for managing database connection lifecycles across different DAO calls. It uses a `ThreadLocal<Connection>` to ensure that all database operations executing within the same thread share a single, unified database connection. 
+
+When a connection is first requested:
+*   It retrieves a connection from the `DBManager`.
+*   It disables auto-commit (`conn.setAutoCommit(false);`), allowing the application to control exactly when changes are finalized.
+
+### Usage in the Business Logic Layer
+The Business Logic layer (`softprog-business-logic`) acts as the transaction boundary. A prime example is the `SalesOrderBLImpl.create` method, which performs multiple operations: validating stock, verifying employees/customers, saving the order, and updating product stock.
+
+Here is the standard pattern used to ensure data integrity:
+
+```java
+public SalesOrder create(SalesOrder salesOrder) throws BusinessLogicException {
+    try {
+        // 1. Perform various validation and DAO operations 
+        // (e.g., productDAO.load, salesOrderDAO.save, productDAO.update)
+        
+        // 2. If all operations succeed, commit the transaction
+        TransactionContext.commit();
+    } catch (Exception ex) {
+        // 3. If any operation fails or an exception is thrown, rollback the transaction
+        TransactionContext.rollback();
+        // Handle or rethrow the exception
+        throw new BusinessLogicException(ex);
+    } finally {
+        // 4. Always close the connection and clean up the ThreadLocal reference
+        TransactionContext.close();
+    }
+    return salesOrder;
+}
+```
+
+By delegating connection management to `TransactionContext`, the DAO layer remains unaware of the broader transaction scope. This allows the Business Logic layer to successfully orchestrate complex, multi-step workflows while maintaining ACID properties, ensuring that if any single step fails, the entire transaction is rolled back.
