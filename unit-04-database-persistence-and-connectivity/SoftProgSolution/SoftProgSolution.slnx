@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="SoftProg/SoftProg.csproj" />
+  <Project Path="SoftProgDBManager/SoftProgDBManager.csproj" />
+  <Project Path="SoftProgDomain/SoftProgDomain.csproj" />
+</Solution>

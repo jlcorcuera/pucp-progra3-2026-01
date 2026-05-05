@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Lab07_dao</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Lab07-db-manager\Lab07-db-manager.csproj" />
+    <ProjectReference Include="..\Lab07-domain\Lab07-domain.csproj" />
+  </ItemGroup>
+
+</Project>

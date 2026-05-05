@@ -3,3 +3,5 @@
 target/
 bin/
 obj/
+.idea/
+.vs/

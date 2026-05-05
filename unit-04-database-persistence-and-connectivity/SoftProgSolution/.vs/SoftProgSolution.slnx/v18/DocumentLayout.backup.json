@@ -1,0 +1,88 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\jluis\\source\\repos\\SoftProgSolution\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{5FD9E4C3-15C2-44CB-B5EB-7A54BA5D2622}|SoftProgDBManager\\SoftProgDBManager.csproj|c:\\users\\jluis\\source\\repos\\softprogsolution\\softprogdbmanager\\dbmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5FD9E4C3-15C2-44CB-B5EB-7A54BA5D2622}|SoftProgDBManager\\SoftProgDBManager.csproj|solutionrelative:softprogdbmanager\\dbmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A96127BB-B884-42ED-BC54-B1C727048142}|SoftProg\\SoftProg.csproj|c:\\users\\jluis\\source\\repos\\softprogsolution\\softprog\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A96127BB-B884-42ED-BC54-B1C727048142}|SoftProg\\SoftProg.csproj|solutionrelative:softprog\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A96127BB-B884-42ED-BC54-B1C727048142}|SoftProg\\SoftProg.csproj|c:\\users\\jluis\\source\\repos\\softprogsolution\\softprog\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{A96127BB-B884-42ED-BC54-B1C727048142}|SoftProg\\SoftProg.csproj|solutionrelative:softprog\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A96127BB-B884-42ED-BC54-B1C727048142}|SoftProg\\SoftProg.csproj|c:\\users\\jluis\\source\\repos\\softprogsolution\\softprog\\softprog.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{A96127BB-B884-42ED-BC54-B1C727048142}|SoftProg\\SoftProg.csproj|solutionrelative:softprog\\softprog.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "SoftProg",
+              "DocumentMoniker": "C:\\Users\\jluis\\source\\repos\\SoftProgSolution\\SoftProg\\SoftProg.csproj",
+              "RelativeDocumentMoniker": "SoftProg\\SoftProg.csproj",
+              "ToolTip": "C:\\Users\\jluis\\source\\repos\\SoftProgSolution\\SoftProg\\SoftProg.csproj",
+              "RelativeToolTip": "SoftProg\\SoftProg.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-04-30T13:41:11.08Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\jluis\\source\\repos\\SoftProgSolution\\SoftProg\\appsettings.json",
+              "RelativeDocumentMoniker": "SoftProg\\appsettings.json",
+              "ToolTip": "C:\\Users\\jluis\\source\\repos\\SoftProgSolution\\SoftProg\\appsettings.json",
+              "RelativeToolTip": "SoftProg\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-04-30T13:42:11.315Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "DBManager.cs",
+              "DocumentMoniker": "C:\\Users\\jluis\\source\\repos\\SoftProgSolution\\SoftProgDBManager\\DBManager.cs",
+              "RelativeDocumentMoniker": "SoftProgDBManager\\DBManager.cs",
+              "ToolTip": "C:\\Users\\jluis\\source\\repos\\SoftProgSolution\\SoftProgDBManager\\DBManager.cs",
+              "RelativeToolTip": "SoftProgDBManager\\DBManager.cs",
+              "ViewState": "AgIAABoAAAAAAAAAAAA9wAAAAAAcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-30T13:40:28.418Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\jluis\\source\\repos\\SoftProgSolution\\SoftProg\\Program.cs",
+              "RelativeDocumentMoniker": "SoftProg\\Program.cs",
+              "ToolTip": "C:\\Users\\jluis\\source\\repos\\SoftProgSolution\\SoftProg\\Program.cs",
+              "RelativeToolTip": "SoftProg\\Program.cs",
+              "ViewState": "AgIAAAcAAAAAAAAAAAAgwBkAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-30T13:40:09.098Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

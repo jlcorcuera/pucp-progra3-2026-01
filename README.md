@@ -36,6 +36,13 @@ The course is organized into nine units. Each unit has a dedicated folder contai
 - **Unit 8: Data Reporting & Document Generation**: [`unit-08-data-reporting-and-document-generation/`](./unit-08-data-reporting-and-document-generation/)
 - **Unit 9: Multithreading & Concurrent Programming**: [`unit-09-multithreading-and-concurrent-programming/`](./unit-09-multithreading-and-concurrent-programming/)
 
+---
+
+## 💡 Quick Reference Guides
+
+This section contains helpful comparisons, code snippets, and guides to bridge the gap between Java and C# conventions throughout the course.
+
+- [Maps (Dictionaries) in Java vs. C#](./guides/maps-dictionaries-java-csharp.md)
 
 ---
 

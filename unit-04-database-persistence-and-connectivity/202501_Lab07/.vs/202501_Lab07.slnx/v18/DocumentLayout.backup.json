@@ -1,0 +1,241 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\jluis\\source\\repos\\202501_Lab07\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{F4064661-A4E0-4F21-8188-96D53FFA8A18}|Lab07-business-logic\\Lab07-business-logic.csproj|c:\\users\\jluis\\source\\repos\\202501_lab07\\lab07-business-logic\\migratorbl.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F4064661-A4E0-4F21-8188-96D53FFA8A18}|Lab07-business-logic\\Lab07-business-logic.csproj|solutionrelative:lab07-business-logic\\migratorbl.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AD1FF656-5FCD-4D56-90A7-B3F4494F5341}|Lab07-dao\\Lab07-dao.csproj|c:\\users\\jluis\\source\\repos\\202501_lab07\\lab07-dao\\impl\\ventadao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AD1FF656-5FCD-4D56-90A7-B3F4494F5341}|Lab07-dao\\Lab07-dao.csproj|solutionrelative:lab07-dao\\impl\\ventadao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AD1FF656-5FCD-4D56-90A7-B3F4494F5341}|Lab07-dao\\Lab07-dao.csproj|c:\\users\\jluis\\source\\repos\\202501_lab07\\lab07-dao\\impl\\clientedao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AD1FF656-5FCD-4D56-90A7-B3F4494F5341}|Lab07-dao\\Lab07-dao.csproj|solutionrelative:lab07-dao\\impl\\clientedao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AD1FF656-5FCD-4D56-90A7-B3F4494F5341}|Lab07-dao\\Lab07-dao.csproj|c:\\users\\jluis\\source\\repos\\202501_lab07\\lab07-dao\\iventadao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AD1FF656-5FCD-4D56-90A7-B3F4494F5341}|Lab07-dao\\Lab07-dao.csproj|solutionrelative:lab07-dao\\iventadao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AD1FF656-5FCD-4D56-90A7-B3F4494F5341}|Lab07-dao\\Lab07-dao.csproj|c:\\users\\jluis\\source\\repos\\202501_lab07\\lab07-dao\\impl\\peliculadao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AD1FF656-5FCD-4D56-90A7-B3F4494F5341}|Lab07-dao\\Lab07-dao.csproj|solutionrelative:lab07-dao\\impl\\peliculadao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AD1FF656-5FCD-4D56-90A7-B3F4494F5341}|Lab07-dao\\Lab07-dao.csproj|c:\\users\\jluis\\source\\repos\\202501_lab07\\lab07-dao\\iclientedao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AD1FF656-5FCD-4D56-90A7-B3F4494F5341}|Lab07-dao\\Lab07-dao.csproj|solutionrelative:lab07-dao\\iclientedao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AD1FF656-5FCD-4D56-90A7-B3F4494F5341}|Lab07-dao\\Lab07-dao.csproj|c:\\users\\jluis\\source\\repos\\202501_lab07\\lab07-dao\\ipeliculadao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AD1FF656-5FCD-4D56-90A7-B3F4494F5341}|Lab07-dao\\Lab07-dao.csproj|solutionrelative:lab07-dao\\ipeliculadao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AD1FF656-5FCD-4D56-90A7-B3F4494F5341}|Lab07-dao\\Lab07-dao.csproj|c:\\users\\jluis\\source\\repos\\202501_lab07\\lab07-dao\\impl\\sucursaldao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AD1FF656-5FCD-4D56-90A7-B3F4494F5341}|Lab07-dao\\Lab07-dao.csproj|solutionrelative:lab07-dao\\impl\\sucursaldao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AD1FF656-5FCD-4D56-90A7-B3F4494F5341}|Lab07-dao\\Lab07-dao.csproj|c:\\users\\jluis\\source\\repos\\202501_lab07\\lab07-dao\\isucursaldao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AD1FF656-5FCD-4D56-90A7-B3F4494F5341}|Lab07-dao\\Lab07-dao.csproj|solutionrelative:lab07-dao\\isucursaldao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4C337AB9-C39B-4A86-9277-BDC7AF5C75E1}|Lab07-domain\\Lab07-domain.csproj|c:\\users\\jluis\\source\\repos\\202501_lab07\\lab07-domain\\entities\\pelicula.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4C337AB9-C39B-4A86-9277-BDC7AF5C75E1}|Lab07-domain\\Lab07-domain.csproj|solutionrelative:lab07-domain\\entities\\pelicula.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F4064661-A4E0-4F21-8188-96D53FFA8A18}|Lab07-business-logic\\Lab07-business-logic.csproj|c:\\users\\jluis\\source\\repos\\202501_lab07\\lab07-business-logic\\imigratorbl.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F4064661-A4E0-4F21-8188-96D53FFA8A18}|Lab07-business-logic\\Lab07-business-logic.csproj|solutionrelative:lab07-business-logic\\imigratorbl.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{16AAA79A-C590-4028-AE5A-D815E76518DD}|Lab07-app\\Lab07-app.csproj|c:\\users\\jluis\\source\\repos\\202501_lab07\\lab07-app\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{16AAA79A-C590-4028-AE5A-D815E76518DD}|Lab07-app\\Lab07-app.csproj|solutionrelative:lab07-app\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4C337AB9-C39B-4A86-9277-BDC7AF5C75E1}|Lab07-domain\\Lab07-domain.csproj|c:\\users\\jluis\\source\\repos\\202501_lab07\\lab07-domain\\entities\\sucursal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4C337AB9-C39B-4A86-9277-BDC7AF5C75E1}|Lab07-domain\\Lab07-domain.csproj|solutionrelative:lab07-domain\\entities\\sucursal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 8,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "VentaDAO.cs",
+              "DocumentMoniker": "C:\\Users\\jluis\\source\\repos\\202501_Lab07\\Lab07-dao\\impl\\VentaDAO.cs",
+              "RelativeDocumentMoniker": "Lab07-dao\\impl\\VentaDAO.cs",
+              "ToolTip": "C:\\Users\\jluis\\source\\repos\\202501_Lab07\\Lab07-dao\\impl\\VentaDAO.cs",
+              "RelativeToolTip": "Lab07-dao\\impl\\VentaDAO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAADwvwoAAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-05T20:50:20.637Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "IVentaDAO.cs",
+              "DocumentMoniker": "C:\\Users\\jluis\\source\\repos\\202501_Lab07\\Lab07-dao\\IVentaDAO.cs",
+              "RelativeDocumentMoniker": "Lab07-dao\\IVentaDAO.cs",
+              "ToolTip": "C:\\Users\\jluis\\source\\repos\\202501_Lab07\\Lab07-dao\\IVentaDAO.cs",
+              "RelativeToolTip": "Lab07-dao\\IVentaDAO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAkAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-05T20:50:04.808Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "ClienteDAO.cs",
+              "DocumentMoniker": "C:\\Users\\jluis\\source\\repos\\202501_Lab07\\Lab07-dao\\impl\\ClienteDAO.cs",
+              "RelativeDocumentMoniker": "Lab07-dao\\impl\\ClienteDAO.cs",
+              "ToolTip": "C:\\Users\\jluis\\source\\repos\\202501_Lab07\\Lab07-dao\\impl\\ClienteDAO.cs",
+              "RelativeToolTip": "Lab07-dao\\impl\\ClienteDAO.cs",
+              "ViewState": "AgIAACQAAAAAAAAAAAAUwCgAAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-05T20:42:55.629Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "IClienteDAO.cs",
+              "DocumentMoniker": "C:\\Users\\jluis\\source\\repos\\202501_Lab07\\Lab07-dao\\IClienteDAO.cs",
+              "RelativeDocumentMoniker": "Lab07-dao\\IClienteDAO.cs",
+              "ToolTip": "C:\\Users\\jluis\\source\\repos\\202501_Lab07\\Lab07-dao\\IClienteDAO.cs",
+              "RelativeToolTip": "Lab07-dao\\IClienteDAO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-05T20:42:28.085Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "PeliculaDAO.cs",
+              "DocumentMoniker": "C:\\Users\\jluis\\source\\repos\\202501_Lab07\\Lab07-dao\\impl\\PeliculaDAO.cs",
+              "RelativeDocumentMoniker": "Lab07-dao\\impl\\PeliculaDAO.cs",
+              "ToolTip": "C:\\Users\\jluis\\source\\repos\\202501_Lab07\\Lab07-dao\\impl\\PeliculaDAO.cs",
+              "RelativeToolTip": "Lab07-dao\\impl\\PeliculaDAO.cs",
+              "ViewState": "AgIAACoAAAAAAAAAAAAowD8AAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-05T20:36:24.251Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "IPeliculaDAO.cs",
+              "DocumentMoniker": "C:\\Users\\jluis\\source\\repos\\202501_Lab07\\Lab07-dao\\IPeliculaDAO.cs",
+              "RelativeDocumentMoniker": "Lab07-dao\\IPeliculaDAO.cs",
+              "ToolTip": "C:\\Users\\jluis\\source\\repos\\202501_Lab07\\Lab07-dao\\IPeliculaDAO.cs",
+              "RelativeToolTip": "Lab07-dao\\IPeliculaDAO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-05T20:35:57.27Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "SucursalDAO.cs",
+              "DocumentMoniker": "C:\\Users\\jluis\\source\\repos\\202501_Lab07\\Lab07-dao\\impl\\SucursalDAO.cs",
+              "RelativeDocumentMoniker": "Lab07-dao\\impl\\SucursalDAO.cs",
+              "ToolTip": "C:\\Users\\jluis\\source\\repos\\202501_Lab07\\Lab07-dao\\impl\\SucursalDAO.cs",
+              "RelativeToolTip": "Lab07-dao\\impl\\SucursalDAO.cs",
+              "ViewState": "AgIAAB8AAAAAAAAAAAAwwCcAAAALAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-05T20:17:30.291Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "ISucursalDAO.cs",
+              "DocumentMoniker": "C:\\Users\\jluis\\source\\repos\\202501_Lab07\\Lab07-dao\\ISucursalDAO.cs",
+              "RelativeDocumentMoniker": "Lab07-dao\\ISucursalDAO.cs",
+              "ToolTip": "C:\\Users\\jluis\\source\\repos\\202501_Lab07\\Lab07-dao\\ISucursalDAO.cs",
+              "RelativeToolTip": "Lab07-dao\\ISucursalDAO.cs",
+              "ViewState": "AgIAAAEAAAAAAAAAAAAewAkAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-05T20:17:20.949Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "MigratorBL.cs",
+              "DocumentMoniker": "C:\\Users\\jluis\\source\\repos\\202501_Lab07\\Lab07-business-logic\\MigratorBL.cs",
+              "RelativeDocumentMoniker": "Lab07-business-logic\\MigratorBL.cs",
+              "ToolTip": "C:\\Users\\jluis\\source\\repos\\202501_Lab07\\Lab07-business-logic\\MigratorBL.cs",
+              "RelativeToolTip": "Lab07-business-logic\\MigratorBL.cs",
+              "ViewState": "AgIAACsAAAAAAAAAAAAiwDwAAAAqAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-05T20:13:00.047Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Pelicula.cs",
+              "DocumentMoniker": "C:\\Users\\jluis\\source\\repos\\202501_Lab07\\Lab07-domain\\entities\\Pelicula.cs",
+              "RelativeDocumentMoniker": "Lab07-domain\\entities\\Pelicula.cs",
+              "ToolTip": "C:\\Users\\jluis\\source\\repos\\202501_Lab07\\Lab07-domain\\entities\\Pelicula.cs",
+              "RelativeToolTip": "Lab07-domain\\entities\\Pelicula.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-05T20:34:27.453Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "IMigratorBL.cs",
+              "DocumentMoniker": "C:\\Users\\jluis\\source\\repos\\202501_Lab07\\Lab07-business-logic\\IMigratorBL.cs",
+              "RelativeDocumentMoniker": "Lab07-business-logic\\IMigratorBL.cs",
+              "ToolTip": "C:\\Users\\jluis\\source\\repos\\202501_Lab07\\Lab07-business-logic\\IMigratorBL.cs",
+              "RelativeToolTip": "Lab07-business-logic\\IMigratorBL.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAgAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-05T20:13:10.757Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\jluis\\source\\repos\\202501_Lab07\\Lab07-app\\Program.cs",
+              "RelativeDocumentMoniker": "Lab07-app\\Program.cs",
+              "ToolTip": "C:\\Users\\jluis\\source\\repos\\202501_Lab07\\Lab07-app\\Program.cs",
+              "RelativeToolTip": "Lab07-app\\Program.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAABUAAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-05T20:13:46.612Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "Sucursal.cs",
+              "DocumentMoniker": "C:\\Users\\jluis\\source\\repos\\202501_Lab07\\Lab07-domain\\entities\\Sucursal.cs",
+              "RelativeDocumentMoniker": "Lab07-domain\\entities\\Sucursal.cs",
+              "ToolTip": "C:\\Users\\jluis\\source\\repos\\202501_Lab07\\Lab07-domain\\entities\\Sucursal.cs",
+              "RelativeToolTip": "Lab07-domain\\entities\\Sucursal.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-05T20:15:11.452Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

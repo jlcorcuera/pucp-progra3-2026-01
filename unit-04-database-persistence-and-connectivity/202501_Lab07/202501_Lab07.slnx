@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="Lab07-app/Lab07-app.csproj" />
+  <Project Path="Lab07-business-logic/Lab07-business-logic.csproj" />
+  <Project Path="Lab07-dao/Lab07-dao.csproj" />
+  <Project Path="Lab07-db-manager/Lab07-db-manager.csproj" />
+  <Project Path="Lab07-domain/Lab07-domain.csproj" />
+</Solution>
