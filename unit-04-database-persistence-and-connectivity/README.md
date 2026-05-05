@@ -200,11 +200,18 @@ By delegating connection management to `TransactionContext`, the DAO layer remai
 *   **IDE:** Visual Studio 2026 Community Edition / Visual Studio Code
 
 ### Directory Structure & Projects
-A standard layered architecture in C# is typically organized within a single `.sln` (Solution) file containing multiple Class Library projects.
-*   **`SoftProgSolution`**: The main solution containing all C# projects.
-*   **`SoftProgDomain`**: A Class Library representing the domain layer. Contains entities such as `Area`, `Empleado`, `Cliente`, `Producto` organized logically into namespaces (e.g., `SoftProgDomain.RRHH`). This layer must be independent of infrastructure and UI concerns.
-*   **`SoftProgDBManager`**: A Class Library managing the database connection. Utilizes the Singleton pattern (`DBManager`) and ADO.NET to establish connections to the MySQL database.
-*   **`SoftProg`**: The Console Application project serving as the entry point (`Main()`) of the application. It orchestrates the system and reads configurations from `appsettings.json`.
+This repository includes two distinct C# implementations demonstrating different connectivity approaches. Both use a standard layered architecture organized within a `.sln` (Solution) file containing multiple Class Library projects:
+
+1.  [**`SoftProgSolution`**](./SoftProgSolution): A foundational C# project demonstrating a **single database connection** approach.
+    *   **`SoftProgDomain`**: A Class Library representing the domain layer. Contains entities such as `Area`, `Empleado`, `Cliente`, `Producto` organized logically into namespaces (e.g., `SoftProgDomain.RRHH`). This layer must be independent of infrastructure and UI concerns.
+    *   **`SoftProgDBManager`**: A Class Library managing the database connection. Utilizes the Singleton pattern (`DBManager`) and ADO.NET to establish connections to the MySQL database.
+    *   **`SoftProg`**: The Console Application project serving as the entry point (`Main()`) of the application. It orchestrates the system and reads configurations from `appsettings.json`.
+
+2.  [**`202501_Lab07`**](./202501_Lab07): An advanced C# project demonstrating how to handle **two connections to different databases** simultaneously.
+    *   **`Lab07-domain`**: The domain layer containing entities such as `Cliente`, `Pelicula`, `Sucursal`, and `Venta`.
+    *   **`Lab07-db-manager`**: The infrastructure layer responsible for managing multiple connection strings and configuring ADO.NET connections to interact with two distinct databases.
+    *   **`Lab07-dao`** and **`Lab07-business-logic`**: Layers that encapsulate data access and business rules, managing queries and operations across the two database environments.
+    *   **`Lab07-app`**: The Console Application project that coordinates the logic and reads multiple database configurations from `appsettings.json`.
 
 ### Getting Started
 To run the C# examples in this repository, follow these steps:
