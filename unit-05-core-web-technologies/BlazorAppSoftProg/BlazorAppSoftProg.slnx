@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="BlazorAppSoftProg/BlazorAppSoftProg.csproj" />
+  <Project Path="SoftProgBL/SoftProgBL.csproj" Id="2cb2c6ae-94d6-42a5-aecb-a367ef73572d" />
+  <Project Path="SoftProgDAO/SoftProgDAO.csproj" />
+  <Project Path="SoftProgDBManager/SoftProgDBManager.csproj" />
+  <Project Path="SoftProgDomain/SoftProgDomain.csproj" />
+</Solution>

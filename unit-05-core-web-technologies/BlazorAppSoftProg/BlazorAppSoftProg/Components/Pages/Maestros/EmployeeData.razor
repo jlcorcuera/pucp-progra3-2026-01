@@ -1,0 +1,159 @@
+@page "/employee-data"
+@page "/employee-data/{Id:int}"
+@rendermode InteractiveServer
+@using SoftProgDomain.RRRHH
+@using SoftProgBL.RRRHH
+@inject IEmpleadoBL empleadoBL
+@inject IAreaBL areaBL
+@inject NavigationManager Nav
+
+<div class="container mt-4">
+    <div class="row mb-3 align-items-center">
+        <div class="col">
+            <h2 class="mb-0">@(Id == 0 ? "Nuevo Empleado" : $"Editar Empleado (ID: {Id})")</h2>
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-secondary" @onclick="Volver">
+                &larr; Volver al Listado
+            </button>
+        </div>
+    </div>
+
+    @if (isLoading)
+    {
+        <div class="d-flex justify-content-center my-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Cargando...</span>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="card shadow-sm">
+            <div class="card-header bg-white py-3">
+                <h5 class="card-title mb-0">Datos del Empleado</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small mb-1">DNI</label>
+                        <input type="text" class="form-control" @bind="currentEmpleado.DNI" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small mb-1">Nombre</label>
+                        <input type="text" class="form-control" @bind="currentEmpleado.Nombre" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small mb-1">Apellido Paterno</label>
+                        <input type="text" class="form-control" @bind="currentEmpleado.ApellidoPaterno" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small mb-1">Sexo</label>
+                        <select class="form-select" @bind="currentEmpleado.Sexo">
+                            <option value="">Seleccione...</option>
+                            <option value="M">Masculino</option>
+                            <option value="F">Femenino</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small mb-1">Fecha de Nacimiento</label>
+                        <input type="date" class="form-control" @bind="currentEmpleado.FechaNacimiento" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small mb-1">Área</label>
+                        <select class="form-select" @bind="currentEmpleado.Area.IdArea">
+                            <option value="0">Seleccione un Área</option>
+                            @foreach (var area in availableAreas)
+                            {
+                                <option value="@area.IdArea">@area.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small mb-1">Cargo</label>
+                        <input type="text" class="form-control" @bind="currentEmpleado.Cargo" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small mb-1">Sueldo</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" step="0.01" class="form-control" @bind="currentEmpleado.Sueldo" />
+                        </div>
+                    </div>
+                    <div class="col-12 mt-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" @bind="currentEmpleado.Activo" id="chkActivo" />
+                            <label class="form-check-label" for="chkActivo">Empleado Activo</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer bg-white d-flex justify-content-end gap-2 py-3">
+                <button type="button" class="btn btn-secondary" @onclick="Volver">Cancelar</button>
+                <button type="button" class="btn btn-primary" @onclick="SaveEmpleado">
+                    @(Id == 0 ? "Registrar Empleado" : "Guardar Cambios")
+                </button>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public int Id { get; set; } = 0;
+
+    private Empleado currentEmpleado = new Empleado { Area = new Area(), Activo = true };
+    private List<Area> availableAreas = new();
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Cargar áreas disponibles para el combo
+        availableAreas = await Task.Run(() => areaBL.listarTodas());
+
+        if (Id != 0)
+        {
+            // Cargar el empleado desde la BD usando el ID recibido por ruta
+            var empleadoDb = await Task.Run(() => empleadoBL.obtenerPorId(Id));
+
+            if (empleadoDb != null)
+            {
+                currentEmpleado = empleadoDb;
+                // Asegurar que Area no sea null para que el binding del select no falle
+                if (currentEmpleado.Area == null)
+                {
+                    currentEmpleado.Area = new Area();
+                }
+            }
+            else
+            {
+                // ID no encontrado: inicializar vacío y resetear el Id para que actúe como nuevo
+                currentEmpleado = new Empleado { Area = new Area(), Activo = true };
+                Id = 0;
+            }
+        }
+
+        isLoading = false;
+    }
+
+    private async Task SaveEmpleado()
+    {
+        // Resolver el objeto Area completo antes de persistir
+        currentEmpleado.Area = availableAreas.FirstOrDefault(a => a.IdArea == currentEmpleado.Area.IdArea) ?? new Area();
+
+        if (Id == 0)
+        {
+            await Task.Run(() => empleadoBL.insertar(currentEmpleado));
+        }
+        else
+        {
+            await Task.Run(() => empleadoBL.modificar(currentEmpleado));
+        }
+
+        Volver();
+    }
+
+    private void Volver()
+    {
+        Nav.NavigateTo("/employee-management");
+    }
+}

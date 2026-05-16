@@ -1,0 +1,296 @@
+@page "/employee-management"
+@rendermode InteractiveServer
+@using SoftProgDomain.RRRHH
+@using SoftProgBL.RRRHH
+@inject IEmpleadoBL empleadoBL
+@inject IAreaBL areaBL
+@inject NavigationManager Nav
+
+<div class="container mt-4">
+    <div class="row mb-3 align-items-center">
+        <div class="col">
+            <h2 class="mb-0">Gestión de Empleados</h2>
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-success" @onclick="AddEmpleado">
+                + Registrar Empleado Modal
+            </button>
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-success" @onclick="Redirigir">
+                + Registrar Empleado Nueva (handler)
+            </button>
+        </div>
+        <div class="col-auto">
+            <a class="btn btn-success" href="/employee-data">
+                + Registrar Empleado Nueva (href)
+            </a>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-white py-3">
+            <h5 class="card-title mb-3">Filtros de Búsqueda (BD)</h5>
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label text-muted small">Nombres</label>
+                    <input type="text" class="form-control" placeholder="Buscar por nombres..." @bind="searchNombre" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label text-muted small">Apellidos</label>
+                    <input type="text" class="form-control" placeholder="Buscar por apellidos..." @bind="searchApellido" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label text-muted small">Área</label>
+                    <select class="form-select" @bind="searchArea">
+                        <option value="0">Todas las Áreas</option>
+                        @foreach(var area in availableAreas)
+                        {
+                            <option value="@area.IdArea">@area.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button class="btn btn-primary w-100" @onclick="ApplySearch">
+                        <i class="bi bi-search"></i> Buscar
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th scope="col" class="px-4 py-3">DNI</th>
+                            <th scope="col" class="px-4 py-3">Nombre</th>
+                            <th scope="col" class="px-4 py-3">Apellido Paterno</th>
+                            <th scope="col" class="px-4 py-3">Fecha Nacimiento</th>
+                            <th scope="col" class="px-4 py-3">Área</th>
+                            <th scope="col" class="px-4 py-3">Cargo</th>
+                            <th scope="col" class="text-end px-4 py-3">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (empleados == null)
+                        {
+                            <tr>
+                                <td colspan="7" class="text-center p-4">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Cargando...</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                        else if (!empleados.Any())
+                        {
+                            <tr>
+                                <td colspan="7" class="text-center text-muted p-4">No se encontraron empleados.</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var empleado in empleados)
+                            {
+                                <tr>
+                                    <td class="align-middle px-4">@empleado.DNI</td>
+                                    <td class="align-middle px-4">@empleado.Nombre</td>
+                                    <td class="align-middle px-4">@empleado.ApellidoPaterno</td>
+                                    <td class="align-middle px-4">@(empleado.FechaNacimiento?.ToString("dd/MM/yyyy") ?? "-")</td>
+                                    <td class="align-middle px-4">
+                                        <span class="badge bg-info text-dark">@empleado.Area</span>
+                                    </td>
+                                    <td class="align-middle px-4">@empleado.Cargo</td>
+                                    <td class="text-end px-4">
+                                        <button class="btn btn-sm btn-primary me-2" @onclick="() => VerDetalle(empleado.IdEmpleado)">
+                                            Editar Modal
+                                        </button>
+                                        <a class="btn btn-sm btn-primary me-2" href="/employee-data/@(empleado.IdEmpleado)">
+                                            Editar
+                                        </a>
+                                        <button class="btn btn-sm btn-danger" @onclick="() => DeleteEmpleado(empleado.IdEmpleado)">
+                                            Eliminar
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (showModal)
+{
+    <div class="modal fade show" tabindex="-1" style="display:block; background-color: rgba(0,0,0,0.5);" aria-modal="true" role="dialog">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detalle de Empleado @(selectedEmpleadoId == 0 ? "(Nuevo)" : $"(ID: {selectedEmpleadoId})")</h5>
+                    <button type="button" class="btn-close" @onclick="CloseModal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small mb-1">DNI</label>
+                            <input type="text" class="form-control" @bind="currentEmpleado.DNI" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small mb-1">Nombre</label>
+                            <input type="text" class="form-control" @bind="currentEmpleado.Nombre" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small mb-1">Apellido Paterno</label>
+                            <input type="text" class="form-control" @bind="currentEmpleado.ApellidoPaterno" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small mb-1">Sexo</label>
+                            <select class="form-select" @bind="currentEmpleado.Sexo">
+                                <option value="">Seleccione...</option>
+                                <option value="M">Masculino</option>
+                                <option value="F">Femenino</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small mb-1">Fecha de Nacimiento</label>
+                            <input type="date" class="form-control" @bind="currentEmpleado.FechaNacimiento" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small mb-1">Área</label>
+                            <select class="form-select" @bind="currentEmpleado.Area.IdArea">
+                                <option value="0">Seleccione un Área</option>
+                                @foreach(var area in availableAreas)
+                                {
+                                    <option value="@area.IdArea">@area.Name</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small mb-1">Cargo</label>
+                            <input type="text" class="form-control" @bind="currentEmpleado.Cargo" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small mb-1">Sueldo</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" step="0.01" class="form-control" @bind="currentEmpleado.Sueldo" />
+                            </div>
+                        </div>
+                        <div class="col-12 mt-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" @bind="currentEmpleado.Activo" id="chkActivo" />
+                                <label class="form-check-label" for="chkActivo">Empleado Activo</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CloseModal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" @onclick="SaveEmpleado">Guardar Cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private List<EmpleadoDTO> empleados;
+    private List<Area> availableAreas = new();
+
+    // Filtros
+    private string searchNombre = string.Empty;
+    private string searchApellido = string.Empty;
+    private int searchArea = 0;
+
+    // Estado del modal
+    private bool showModal = false;
+    private int selectedEmpleadoId;
+    private Empleado currentEmpleado = new Empleado { Area = new Area() };
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Cargar combos desde BD
+        availableAreas = await Task.Run(() => areaBL.listarTodas());
+        // Cargar empleados desde BD
+        await ApplySearch();
+    }
+
+    private async Task ApplySearch()
+    {
+        empleados = await Task.Run(() => empleadoBL.listar(searchNombre, searchApellido, searchArea));
+    }
+
+    private void AddEmpleado()
+    {
+        selectedEmpleadoId = 0; // Usaremos 0 para representar un empleado nuevo
+        currentEmpleado = new Empleado { Area = new Area(), Activo = true };
+        showModal = true;
+    }
+
+    private async Task VerDetalle(int idEmpleado)
+    {
+        // Guardamos el ID del empleado seleccionado para luego cargarlo en el modal
+        selectedEmpleadoId = idEmpleado;
+
+        // Cargar Empleado directamente desde la BD (no del DTO)
+        var empleadoDb = await Task.Run(() => empleadoBL.obtenerPorId(idEmpleado));
+
+        if (empleadoDb != null)
+        {
+            currentEmpleado = empleadoDb;
+            // Asegurar que si Area viene nulo, iniciamos una vacía para que el binding del select no falle
+            if (currentEmpleado.Area == null) 
+            {
+                currentEmpleado.Area = new Area();
+            }
+        }
+        else
+        {
+            currentEmpleado = new Empleado { Area = new Area(), Activo = true };
+        }
+
+        showModal = true;
+    }
+
+    private async Task SaveEmpleado()
+    {
+        // Obtener el objeto Area correcto para enviar a la capa de Negocio
+        currentEmpleado.Area = availableAreas.FirstOrDefault(a => a.IdArea == currentEmpleado.Area.IdArea) ?? new Area();
+
+        if (selectedEmpleadoId == 0)
+        {
+            await Task.Run(() => empleadoBL.insertar(currentEmpleado));
+        }
+        else
+        {
+            await Task.Run(() => empleadoBL.modificar(currentEmpleado));
+        }
+
+        // Refrescar lista
+        await ApplySearch();
+        showModal = false;
+    }
+
+    private async Task DeleteEmpleado(int id)
+    {
+        await Task.Run(() => empleadoBL.eliminar(id));
+        await ApplySearch();
+    }
+
+    private void CloseModal()
+    {
+        showModal = false;
+    }
+
+    private void Redirigir()
+    {
+        // EXECUTE CUSTOM LOGIC
+
+            Nav.NavigateTo("/employee-data");
+
+ 
+
+    }
+}

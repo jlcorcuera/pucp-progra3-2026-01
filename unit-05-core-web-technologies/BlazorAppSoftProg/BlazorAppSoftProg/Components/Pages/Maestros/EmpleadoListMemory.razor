@@ -1,0 +1,298 @@
+@page "/empleado"
+@rendermode InteractiveServer
+@using SoftProgDomain.RRRHH
+
+<div class="container mt-4">
+    <div class="row mb-3 align-items-center">
+        <div class="col">
+            <h2 class="mb-0">Gestión de Empleados</h2>
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-success" @onclick="AddEmpleado">
+                + Registrar Empleado
+            </button>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-white py-3">
+            <h5 class="card-title mb-3">Filtros de Búsqueda</h5>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label text-muted small">Nombres</label>
+                    <input type="text" class="form-control" placeholder="Buscar por nombres..." @bind="searchNombre" @bind:event="oninput" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label text-muted small">Apellidos</label>
+                    <input type="text" class="form-control" placeholder="Buscar por apellidos..." @bind="searchApellido" @bind:event="oninput" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label text-muted small">Área</label>
+                    <select class="form-select" @bind="searchArea">
+                        <option value="">Todas las Áreas</option>
+                        @foreach(var area in availableAreas)
+                        {
+                            <option value="@area.Name">@area.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th scope="col" class="px-4 py-3">DNI</th>
+                            <th scope="col" class="px-4 py-3">Nombre</th>
+                            <th scope="col" class="px-4 py-3">Apellido Paterno</th>
+                            <th scope="col" class="px-4 py-3">Fecha Nacimiento</th>
+                            <th scope="col" class="px-4 py-3">Área</th>
+                            <th scope="col" class="px-4 py-3">Cargo</th>
+                            <th scope="col" class="text-end px-4 py-3">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (FilteredEmpleados == null)
+                        {
+                            <tr>
+                                <td colspan="7" class="text-center p-4">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Cargando...</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                        else if (!FilteredEmpleados.Any())
+                        {
+                            <tr>
+                                <td colspan="7" class="text-center text-muted p-4">No se encontraron empleados.</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var empleado in FilteredEmpleados)
+                            {
+                                <tr>
+                                    <td class="align-middle px-4">@empleado.DNI</td>
+                                    <td class="align-middle px-4">@empleado.Nombre</td>
+                                    <td class="align-middle px-4">@empleado.ApellidoPaterno</td>
+                                    <td class="align-middle px-4">@(empleado.FechaNacimiento?.ToString("dd/MM/yyyy") ?? "-")</td>
+                                    <td class="align-middle px-4">
+                                        <span class="badge bg-info text-dark">@empleado.Area</span>
+                                    </td>
+                                    <td class="align-middle px-4">@empleado.Cargo</td>
+                                    <td class="text-end px-4">
+                                        <button class="btn btn-sm btn-primary" @onclick="() => VerDetalle(empleado.IdEmpleado)">
+                                            Ver / Editar
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (showModal)
+{
+    <div class="modal fade show" tabindex="-1" style="display:block; background-color: rgba(0,0,0,0.5);" aria-modal="true" role="dialog">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detalle de Empleado @(selectedEmpleadoId == 0 ? "(Nuevo)" : $"(ID: {selectedEmpleadoId})")</h5>
+                    <button type="button" class="btn-close" @onclick="CloseModal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small mb-1">DNI</label>
+                            <input type="text" class="form-control" @bind="currentEmpleado.DNI" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small mb-1">Nombre</label>
+                            <input type="text" class="form-control" @bind="currentEmpleado.Nombre" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small mb-1">Apellido Paterno</label>
+                            <input type="text" class="form-control" @bind="currentEmpleado.ApellidoPaterno" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small mb-1">Sexo</label>
+                            <select class="form-select" @bind="currentEmpleado.Sexo">
+                                <option value="">Seleccione...</option>
+                                <option value="M">Masculino</option>
+                                <option value="F">Femenino</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small mb-1">Fecha de Nacimiento</label>
+                            <input type="date" class="form-control" @bind="currentEmpleado.FechaNacimiento" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small mb-1">Área</label>
+                            <select class="form-select" @bind="currentEmpleado.Area.IdArea">
+                                <option value="0">Seleccione un Área</option>
+                                @foreach(var area in availableAreas)
+                                {
+                                    <option value="@area.IdArea">@area.Name</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small mb-1">Cargo</label>
+                            <input type="text" class="form-control" @bind="currentEmpleado.Cargo" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small mb-1">Sueldo</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" step="0.01" class="form-control" @bind="currentEmpleado.Sueldo" />
+                            </div>
+                        </div>
+                        <div class="col-12 mt-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" @bind="currentEmpleado.Activo" id="chkActivo" />
+                                <label class="form-check-label" for="chkActivo">Empleado Activo</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CloseModal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" @onclick="SaveEmpleado">Guardar Cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private List<EmpleadoDTO> empleados = new();
+    private List<Area> availableAreas = new();
+
+    // Filtros
+    private string searchNombre = string.Empty;
+    private string searchApellido = string.Empty;
+    private string searchArea = string.Empty;
+
+    // Estado del modal
+    private bool showModal = false;
+    private int selectedEmpleadoId;
+    private Empleado currentEmpleado = new Empleado { Area = new Area() };
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Simulamos retardo de red o BD
+        await Task.Delay(500);
+
+        // Datos de prueba para el combo box de área
+        availableAreas = new List<Area> 
+        { 
+            new Area { IdArea = 1, Name = "Recursos Humanos" },
+            new Area { IdArea = 2, Name = "Finanzas" },
+            new Area { IdArea = 3, Name = "Tecnología de la Información" },
+            new Area { IdArea = 4, Name = "Ventas" }
+        };
+
+        // Datos de prueba usando EmpleadoDTO
+        empleados = new List<EmpleadoDTO>
+        {
+            new EmpleadoDTO { IdEmpleado = 1, DNI = "71234567", Nombre = "Juan", ApellidoPaterno = "Perez", FechaNacimiento = new DateTime(1990, 5, 15), Area = "Recursos Humanos", Cargo = "Analista" },
+            new EmpleadoDTO { IdEmpleado = 2, DNI = "72345678", Nombre = "Maria", ApellidoPaterno = "Gomez", FechaNacimiento = new DateTime(1985, 8, 20), Area = "Finanzas", Cargo = "Contadora" },
+            new EmpleadoDTO { IdEmpleado = 3, DNI = "73456789", Nombre = "Carlos", ApellidoPaterno = "Lopez", FechaNacimiento = new DateTime(1992, 12, 10), Area = "Tecnología de la Información", Cargo = "Desarrollador" },
+            new EmpleadoDTO { IdEmpleado = 4, DNI = "74567890", Nombre = "Ana", ApellidoPaterno = "Torres", FechaNacimiento = new DateTime(1995, 3, 25), Area = "Tecnología de la Información", Cargo = "QA" },
+            new EmpleadoDTO { IdEmpleado = 5, DNI = "75678901", Nombre = "Luis", ApellidoPaterno = "Ramirez", FechaNacimiento = new DateTime(1988, 11, 5), Area = "Ventas", Cargo = "Vendedor" }
+        };
+    }
+
+    private IEnumerable<EmpleadoDTO> FilteredEmpleados
+    {
+        get
+        {
+            return empleados.Where(e =>
+                (string.IsNullOrWhiteSpace(searchNombre) || (e.Nombre?.Contains(searchNombre, StringComparison.OrdinalIgnoreCase) ?? false)) &&
+                (string.IsNullOrWhiteSpace(searchApellido) || (e.ApellidoPaterno?.Contains(searchApellido, StringComparison.OrdinalIgnoreCase) ?? false)) &&
+                (string.IsNullOrWhiteSpace(searchArea) || (e.Area?.Equals(searchArea, StringComparison.OrdinalIgnoreCase) ?? false))
+            );
+        }
+    }
+
+    private void AddEmpleado()
+    {
+        selectedEmpleadoId = 0; // Usaremos 0 para representar un empleado nuevo
+        currentEmpleado = new Empleado { Area = new Area(), Activo = true };
+        showModal = true;
+    }
+
+    private void VerDetalle(int idEmpleado)
+    {
+        // Guardamos el ID del empleado seleccionado para luego cargarlo en el modal
+        selectedEmpleadoId = idEmpleado;
+        
+        // Simulación: cargar Empleado desde la BD
+        var dto = empleados.FirstOrDefault(e => e.IdEmpleado == idEmpleado);
+        if (dto != null)
+        {
+            var areaDb = availableAreas.FirstOrDefault(a => a.Name == dto.Area) ?? new Area();
+            currentEmpleado = new Empleado
+            {
+                IdPersona = dto.IdEmpleado,
+                DNI = dto.DNI,
+                Nombre = dto.Nombre,
+                ApellidoPaterno = dto.ApellidoPaterno,
+                FechaNacimiento = dto.FechaNacimiento,
+                Cargo = dto.Cargo,
+                Area = areaDb,
+                Activo = true // Dato simulado
+            };
+        }
+        showModal = true;
+    }
+
+    private void SaveEmpleado()
+    {
+        // Obtenemos el nombre del área seleccionada para el DTO
+        var areaNombre = availableAreas.FirstOrDefault(a => a.IdArea == currentEmpleado.Area?.IdArea)?.Name ?? string.Empty;
+
+        if (selectedEmpleadoId == 0)
+        {
+            // Insertar nuevo registro
+            int newId = empleados.Any() ? empleados.Max(e => e.IdEmpleado) + 1 : 1;
+            empleados.Add(new EmpleadoDTO
+            {
+                IdEmpleado = newId,
+                DNI = currentEmpleado.DNI,
+                Nombre = currentEmpleado.Nombre,
+                ApellidoPaterno = currentEmpleado.ApellidoPaterno,
+                FechaNacimiento = currentEmpleado.FechaNacimiento,
+                Area = areaNombre,
+                Cargo = currentEmpleado.Cargo
+            });
+        }
+        else
+        {
+            // Actualizar registro existente
+            var dto = empleados.FirstOrDefault(e => e.IdEmpleado == selectedEmpleadoId);
+            if (dto != null)
+            {
+                dto.DNI = currentEmpleado.DNI;
+                dto.Nombre = currentEmpleado.Nombre;
+                dto.ApellidoPaterno = currentEmpleado.ApellidoPaterno;
+                dto.FechaNacimiento = currentEmpleado.FechaNacimiento;
+                dto.Area = areaNombre;
+                dto.Cargo = currentEmpleado.Cargo;
+            }
+        }
+
+        showModal = false;
+    }
+
+    private void CloseModal()
+    {
+        showModal = false;
+    }
+}
