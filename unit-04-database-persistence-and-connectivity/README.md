@@ -24,9 +24,11 @@ This repository covers the core techniques for connecting an application to a Da
 *   **IDE:** IntelliJ IDEA
 
 ### Directory Structure
-*   **`db_scripts`**: Contains the SQL scripts and database backups required to provision the `softprog` database schema.
-*   **`SoftProgApp`**: A foundational Java project demonstrating the basics of database connectivity and query execution.
-*   [**`softprog`**](./softprog): A comprehensive project showcasing the implementation of business logic, including robust transaction handling and structured exception propagation across architectural layers.
+The Java projects and database setup resources are structured as follows:
+
+*   [**`db_scripts`**](./db_scripts): Contains the SQL scripts and database backups (like `softprog_backup.sql`) required to provision the `softprog` database schema.
+*   [**`java/SoftProgApp`**](./java/SoftProgApp): A foundational Java project demonstrating the basics of database connectivity, resource lifecycle management, and query execution.
+*   [**`java/softprog`**](./java/softprog): A comprehensive multi-module Maven application demonstrating a layered architecture (Domain, DAO, DBManager, Business Logic, Presentation) with robust transaction management using `TransactionContext` to ensure ACID compliance.
 
 ### Configuring IntelliJ to work properly with Maven
 
@@ -47,7 +49,7 @@ To run the examples in this repository, follow these steps:
 5. Update the connection parameters with your specific AWS RDS endpoint URL, database schema name, username, and password before compiling the project.
 
 ### First steps with JDBC and Maven
-The `SoftProgApp` directory contains a sample multi-module Maven project demonstrating the fundamental concepts of connecting to a MySQL database using JDBC.
+The `java/SoftProgApp` directory contains a sample multi-module Maven project demonstrating the fundamental concepts of connecting to a MySQL database using JDBC.
 
 #### Adding the JDBC Driver Dependency
 Before writing any Java code to connect to the database, the project must be configured with the necessary drivers. Because this project uses Maven, we simply configure the `pom.xml` file (specifically in the `AppTest` module) to seamlessly download and include the `mysql-connector-j` library:
@@ -147,10 +149,10 @@ try (Connection connection = DBManager.getInstance().getConnection();
 
 ### Transaction Management in Business Logic
 
-In real-world applications, operations often span multiple database queries that must succeed or fail as a single unit of work. The `softprog` project demonstrates this through the `TransactionContext` utility and its integration within the Business Logic layer.
+In real-world applications, operations often span multiple database queries that must succeed or fail as a single unit of work. The `java/softprog` project demonstrates this through the `TransactionContext` utility and its integration within the Business Logic layer.
 
 #### The `TransactionContext` Utility
-Located in the `softprog-db-manager` module (`pe.edu.pucp.softprog.dao.transaction.TransactionContext`), this class is responsible for managing database connection lifecycles across different DAO calls. It uses a `ThreadLocal<Connection>` to ensure that all database operations executing within the same thread share a single, unified database connection. 
+Located in the `softprog-db-manager` module under `java/softprog` (`pe.edu.pucp.softprog.dao.transaction.TransactionContext`), this class is responsible for managing database connection lifecycles across different DAO calls. It uses a `ThreadLocal<Connection>` to ensure that all database operations executing within the same thread share a single, unified database connection. 
 
 When a connection is first requested:
 *   It retrieves a connection from the `DBManager`.
@@ -200,32 +202,37 @@ By delegating connection management to `TransactionContext`, the DAO layer remai
 *   **IDE:** Visual Studio 2026 Community Edition / Visual Studio Code
 
 ### Directory Structure & Projects
-This repository includes two distinct C# implementations demonstrating different connectivity approaches. Both use a standard layered architecture organized within a `.sln` (Solution) file containing multiple Class Library projects:
+The `csharp` folder contains multiple C# implementations (along with educational content) illustrating different database connectivity approaches, provider abstraction, and data migrations using ADO.NET:
 
-1.  [**`SoftProgSolution`**](./SoftProgSolution): A foundational C# project demonstrating a **single database connection** approach.
-    *   **`SoftProgDomain`**: A Class Library representing the domain layer. Contains entities such as `Area`, `Empleado`, `Cliente`, `Producto` organized logically into namespaces (e.g., `SoftProgDomain.RRHH`). This layer must be independent of infrastructure and UI concerns.
-    *   **`SoftProgDBManager`**: A Class Library managing the database connection. Utilizes the Singleton pattern (`DBManager`) and ADO.NET to establish connections to the MySQL database.
-    *   **`SoftProg`**: The Console Application project serving as the entry point (`Main()`) of the application. It orchestrates the system and reads configurations from `appsettings.json`.
+1.  [**`csharp/SoftProgSolutionMySQL`**](./csharp/SoftProgSolutionMySQL): A foundational C# solution demonstrating a **single database connection** approach with MySQL.
+    *   **`SoftProgDomain`**: A Class Library representing the domain layer, keeping entity logic (`Area`, `Empleado`, `Cliente`, `Producto`) independent of databases and UI.
+    *   **`SoftProgDBManager`**: A Class Library implementing a thread-safe Singleton `DBManager` using ADO.NET to establish and dispense `MySqlConnection` objects.
+    *   **`SoftProg`**: The main Console Application serving as the system entry point, orchestrating user interactions and loading connection parameters from `appsettings.json`.
 
-2.  [**`202501_Lab07`**](./202501_Lab07): An advanced C# project demonstrating how to handle **two connections to different databases** simultaneously.
-    *   **`Lab07-domain`**: The domain layer containing entities such as `Cliente`, `Pelicula`, `Sucursal`, and `Venta`.
-    *   **`Lab07-db-manager`**: The infrastructure layer responsible for managing multiple connection strings and configuring ADO.NET connections to interact with two distinct databases.
-    *   **`Lab07-dao`** and **`Lab07-business-logic`**: Layers that encapsulate data access and business rules, managing queries and operations across the two database environments.
-    *   **`Lab07-app`**: The Console Application project that coordinates the logic and reads multiple database configurations from `appsettings.json`.
+2.  [**`csharp/SoftProgSolutionMySQLMSSQL`**](./csharp/SoftProgSolutionMySQLMSSQL): An advanced C# solution showcasing database provider abstraction using the standard ADO.NET `IDbConnection` interface.
+    *   Allows the application to run against **either MySQL or Microsoft SQL Server (MSSQL)** depending on the runtime type configured in `appsettings.json`.
+    *   Demonstrates how to decouple query execution from specific DB engines, allowing great portability.
+
+3.  [**`csharp/202501_Lab07`**](./csharp/202501_Lab07): A complete solution demonstrating data migration from a **denormalized source** to a **normalized destination** database using two simultaneous connection strings.
+    *   Iterates through flattened sales records to normalize them across discrete relational tables (`Sucursal`, `Pelicula`, `Cliente`, `Venta`).
+    *   Uses dual ADO.NET connections managed dynamically under a clean layered design.
+
+4.  [**`csharp/Lab06SoftProg`**](./csharp/Lab06SoftProg): A Java-based multi-module Maven project representing Lab 06, included within this workspace for historical context or academic reference.
 
 ### Getting Started
 To run the C# examples in this repository, follow these steps:
 1. Install **Visual Studio 2026 Community Edition** with the following workloads: **.NET desktop development**, **ASP.NET and web development**, and **Data storage and processing**.
 2. Configure your AWS RDS instance as described in the general section.
-3. Open `SoftProgSolution` in Visual Studio 2026 Community Edition.
-4. Set the necessary inter-project dependencies. Right-click on the `SoftProg` project -> **Add** -> **Project Reference...** and ensure references to `SoftProgDomain` and `SoftProgDBManager` are added.
-5. Ensure the `SoftProg` console application is set as the **Startup Project** (Right-click -> "Set as Startup Project").
-6. Verify the required NuGet packages are installed. You will need:
+3. Open either `SoftProgSolutionMySQL` or `SoftProgSolutionMySQLMSSQL` in Visual Studio 2026 Community Edition using their respective `.slnx` solution definition files.
+4. Verify the necessary inter-project dependencies. In the Solution Explorer, ensure the startup Console Application has references to its domain, data access, or DB manager projects.
+5. Ensure the startup console application (`SoftProg`) is set as the **Startup Project** (Right-click the project -> **Set as Startup Project**).
+6. Verify the required NuGet packages are installed. Key packages include:
    * `MySql.Data` (for MySQL connectivity)
+   * `Microsoft.Data.SqlClient` (for MSSQL connectivity in the MSSQL solution)
    * `Microsoft.Extensions.Configuration`
    * `Microsoft.Extensions.Configuration.Json`
    * `Microsoft.Extensions.Configuration.FileExtensions`
-7. Update the `appsettings.json` file in the `SoftProg` project with your MySQL connection string. Make sure to set its **"Copy to Output Directory"** property to **"Copy if newer"** so the configuration file is included in the build output.
+7. Update the `appsettings.json` file in the main application project with your specific connection string(s). Make sure to set its **"Copy to Output Directory"** property to **"Copy if newer"** so the configuration file is included in the build output.
 
 ### Connecting to MySQL with ADO.NET
 
@@ -361,3 +368,147 @@ using (MySqlConnection connection = DBManager.Instance.GetConnection())
     }
 }
 ```
+
+---
+
+### Connecting to MySQL/MSSQL with ADO.NET
+
+To build a truly portable and robust application, you should avoid hardcoding provider-specific classes like `MySqlConnection` or `SqlConnection` inside your Data Access Objects (DAOs). Instead, you can write database-agnostic code by leveraging standard ADO.NET interfaces: **`IDbConnection`**, **`IDbCommand`**, **`IDataReader`**, and **`IDbDataParameter`**. 
+
+This approach ensures that you can switch the underlying database engine (e.g., from MySQL to Microsoft SQL Server) purely through configuration changes without rewriting any data access logic.
+
+#### Unified `appsettings.json` Configuration
+By externalizing the database type and defining separate connection strings, you can dynamically instantiate the appropriate connection at runtime:
+
+```json
+{
+  "ConnectionStrings": {
+    "Type": "MSSQLServer",
+    "MySqlConnection": "Server=my-mysql-endpoint.rds.amazonaws.com;Port=3306;Database=softprog;Uid=admin;Pwd=password;",
+    "MSSQLServerConnection": "Server=my-sqlserver-endpoint.rds.amazonaws.com;Database=softprog;Uid=admin;Pwd=password;TrustServerCertificate=True"
+  }
+}
+```
+
+The thread-safe `DBManager` Singleton reads this configuration and returns the generic `IDbConnection` interface:
+
+```csharp
+public IDbConnection GetConnection()
+{
+    if (_dbType == "MySQL")
+    {
+        return new MySqlConnection(_connectionString);
+    }
+    return new SqlConnection(_connectionStringMSSQLServer);
+}
+```
+
+#### Database-Agnostic Data Insertion
+To insert data without tying your code to a specific provider, use `IDbConnection` and `IDbCommand`. Since you cannot directly instantiate parameter objects without referencing a provider (like `new MySqlParameter()`), you must use the command's factory method `CreateParameter()` to instantiate them dynamically:
+
+```csharp
+using (IDbConnection connection = DBManager.Instance.GetConnection())
+{
+    connection.Open();
+    string sql = "INSERT INTO area(nombre, activa) VALUES (@nombre, @activa)";
+    
+    using (IDbCommand command = connection.CreateCommand())
+    {
+        command.CommandText = sql;
+        
+        // 1. Create a generic parameter using the command factory
+        IDbDataParameter paramNombre = command.CreateParameter();
+        paramNombre.ParameterName = "@nombre";
+        paramNombre.Value = "Recursos Humanos";
+        command.Parameters.Add(paramNombre);
+        
+        // 2. Create another parameter
+        IDbDataParameter paramActiva = command.CreateParameter();
+        paramActiva.ParameterName = "@activa";
+        paramActiva.Value = true;
+        command.Parameters.Add(paramActiva);
+        
+        // Execute the query
+        int filasAfectadas = command.ExecuteNonQuery();
+        Console.WriteLine("Filas insertadas: " + filasAfectadas);
+    }
+}
+```
+
+#### Database-Agnostic Query Execution
+Reading data in a provider-agnostic manner relies on `IDataReader`. You can access values using zero-based indices or type-safe getter methods:
+
+```csharp
+using (IDbConnection connection = DBManager.Instance.GetConnection())
+{
+    connection.Open();
+    string sql = "SELECT id_area, nombre FROM area WHERE activa = @activa";
+    
+    using (IDbCommand command = connection.CreateCommand())
+    {
+        command.CommandText = sql;
+        
+        IDbDataParameter paramActiva = command.CreateParameter();
+        paramActiva.ParameterName = "@activa";
+        paramActiva.Value = true;
+        command.Parameters.Add(paramActiva);
+        
+        // Execute the query and obtain the generic IDataReader
+        using (IDataReader reader = command.ExecuteReader())
+        {
+            Console.WriteLine("Áreas Activas:");
+            while (reader.Read())
+            {
+                // Access values using zero-based indices
+                int id = reader.GetInt32(0);
+                string nombre = reader.GetString(1);
+                
+                Console.WriteLine($"- ID: {id}, Nombre: {nombre}");
+            }
+        }
+    }
+}
+```
+
+#### Database-Agnostic Stored Procedure Execution
+Invoking stored procedures that utilize output parameters (e.g., to retrieve auto-generated IDs) follows a similar database-independent structure. We configure the parameters with their appropriate type and direction:
+
+```csharp
+using (IDbConnection connection = DBManager.Instance.GetConnection())
+{
+    connection.Open();
+    
+    using (IDbCommand command = connection.CreateCommand())
+    {
+        // 1. Set command text and type
+        command.CommandText = "INSERTAR_AREA";
+        command.CommandType = CommandType.StoredProcedure;
+        
+        // 2. Configure OUTPUT Parameter using IRef/IDbDataParameter
+        IDbDataParameter paramIdArea = command.CreateParameter();
+        paramIdArea.ParameterName = "@_id_area";
+        paramIdArea.DbType = DbType.Int32;
+        paramIdArea.Direction = ParameterDirection.Output;
+        command.Parameters.Add(paramIdArea);
+        
+        // 3. Configure Input Parameter
+        IDbDataParameter paramNombre = command.CreateParameter();
+        paramNombre.ParameterName = "@_nombre";
+        paramNombre.DbType = DbType.String;
+        paramNombre.Size = 30;
+        paramNombre.Value = "Logística";
+        command.Parameters.Add(paramNombre);
+        
+        // Execute the procedure
+        command.ExecuteNonQuery();
+        
+        // 4. Retrieve the newly generated output ID safely
+        int nuevoId = Convert.ToInt32(paramIdArea.Value);
+        Console.WriteLine($"Nueva área insertada con ID: {nuevoId}");
+    }
+}
+```
+
+> [!TIP]
+> **Parameter Prefixes across Dialects:** While MySQL commonly accepts parameters with `@` prefixes inside stored procedures or direct text commands, Microsoft SQL Server also uses `@`. In DB-agnostic applications, maintain unified names in your code and adjust stored procedures in each target database schema to share parameter names (such as `@_nombre` or `@nombre`) so that your code remains 100% database-agnostic.
+
