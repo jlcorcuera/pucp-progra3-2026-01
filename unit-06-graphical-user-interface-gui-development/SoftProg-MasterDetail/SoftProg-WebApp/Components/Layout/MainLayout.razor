@@ -1,0 +1,55 @@
+@inherits LayoutComponentBase
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/home">Mi App</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMaestros" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Maestros
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMaestros">
+                        <li><a class="dropdown-item" href="/administrar-clientes">Cliente</a></li>
+                        <li><a class="dropdown-item" href="#">Empleado</a></li>
+                        <li><a class="dropdown-item" href="#">Producto</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownAdministracion" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Administración
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownAdministracion">
+                        <AuthorizeView Roles="Admin, Employee">
+                            <li><a class="dropdown-item" href="/administrar-ordenes">Órdenes de Venta</a></li>
+                        </AuthorizeView>
+                        <li><a class="dropdown-item" href="#">Reportes</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <div class="d-flex align-items-center">
+                <AuthorizeView>
+                    <Authorized>
+                        <span class="navbar-text text-white me-3">
+                            Bienvenido, @(context.User.FindFirst("DisplayName")?.Value ?? context.User.Identity?.Name) [@(context.User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value)] — ID: @(context.User.FindFirst("EmployeeId")?.Value)
+                        </span>
+                        <a href="/auth/logout" class="btn btn-danger btn-sm">Logout</a>
+                    </Authorized>
+                </AuthorizeView>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<main class="container-fluid">
+    @Body
+</main>
+
+<div id="blazor-error-ui" data-nosnippet>
+    An unhandled error has occurred.
+    <a href="." class="reload">Reload</a>
+    <span class="dismiss">🗙</span>
+</div>

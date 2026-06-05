@@ -1,0 +1,11 @@
+@inject NavigationManager NavigationManager
+
+@code {
+    protected override void OnInitialized()
+    {
+        // Forzamos una redirección con forceLoad=true. 
+        // Esto es necesario para que el middleware de autenticación por Cookie tome el control 
+        // a nivel de petición HTTP si se requiere redirigir a un usuario no autorizado.
+        NavigationManager.NavigateTo("/", forceLoad: true);
+    }
+}

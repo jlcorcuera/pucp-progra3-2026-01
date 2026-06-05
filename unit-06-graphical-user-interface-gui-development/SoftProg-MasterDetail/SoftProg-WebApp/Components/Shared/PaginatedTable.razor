@@ -1,0 +1,183 @@
+@typeparam TItem
+@using SoftProg_WebApp.Models
+
+<div>
+    <!-- ─── Top bar: page size | record count | pagination ─── -->
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        @RenderPageSizeSelector
+        <span class="text-muted small">@SummaryRecords</span>
+        @RenderPagination
+    </div>
+
+    <!-- ─── Table ─── -->
+    <div class="table-responsive shadow-sm rounded">
+        <table class="table table-hover align-middle mb-0 bg-white">
+            <thead class="table-dark">
+                @TableHeader
+            </thead>
+            <tbody>
+                @if (Page.Items.Any())
+                {
+                    @foreach (var item in Page.Items)
+                    {
+                        @RowTemplate(item)
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="@ColSpan" class="text-center py-5 text-muted">
+                            <i class="bi bi-inbox me-2"></i>@EmptyMessage
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ─── Bottom bar: page size | record count + page indicator | pagination ─── -->
+    <div class="d-flex justify-content-between align-items-center mt-3">
+        @RenderPageSizeSelector
+        <span class="text-muted small">@SummaryWithPage</span>
+        @RenderPagination
+    </div>
+</div>
+
+@code {
+    // ── Parameters ──────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Current page slice + total record count. The parent must update this in response
+    /// to OnChanged events so the displayed rows always match the navigation state.
+    /// </summary>
+    [Parameter] public TablePage<TItem> Page { get; set; } = new();
+
+    /// <summary>Column header row(s) rendered inside &lt;thead&gt;. Typically one &lt;tr&gt; of &lt;th&gt; elements.</summary>
+    [Parameter] public RenderFragment? TableHeader { get; set; }
+
+    /// <summary>Renders a single &lt;tr&gt; for each item on the current page.</summary>
+    [Parameter] public RenderFragment<TItem> RowTemplate { get; set; } = default!;
+
+    /// <summary>
+    /// Fired whenever the user navigates to a different page or changes the page size.
+    /// The parent should re-slice its filtered list using the supplied PageQuery and
+    /// assign a new TablePage&lt;TItem&gt; to refresh the display.
+    /// </summary>
+    [Parameter] public EventCallback<PageQuery> OnChanged { get; set; }
+
+    /// <summary>colspan for the empty-state row. Should match the number of &lt;th&gt; columns.</summary>
+    [Parameter] public int ColSpan { get; set; } = 5;
+
+    /// <summary>Message shown in the empty-state row when Page.Items is empty.</summary>
+    [Parameter] public string EmptyMessage { get; set; } = "No se encontraron registros.";
+
+    // ── Internal state ───────────────────────────────────────────────────────
+
+    private int pageSize = 10;
+    private int currentPage = 1;
+
+    private TablePage<TItem> _previousPage = null!;
+    private bool _isNavigatingInternally;
+    private List<int> visiblePages = new();
+
+    // ── Computed properties ──────────────────────────────────────────────────
+
+    private int TotalPages => Page.TotalRecords > 0
+        ? (int)Math.Ceiling(Page.TotalRecords / (double)pageSize)
+        : 1;
+
+    private int StartRecord => Page.TotalRecords > 0 ? (currentPage - 1) * pageSize + 1 : 0;
+    private int EndRecord    => Math.Min(currentPage * pageSize, Page.TotalRecords);
+
+    private string SummaryRecords => Page.TotalRecords > 0
+        ? $"Mostrando {StartRecord}–{EndRecord} de {Page.TotalRecords} registros"
+        : "Sin registros";
+
+    private string SummaryWithPage => Page.TotalRecords > 0
+        ? $"Mostrando {StartRecord}–{EndRecord} de {Page.TotalRecords} registros  ·  Página {currentPage} de {TotalPages}"
+        : "Sin registros";
+
+    // ── Lifecycle ────────────────────────────────────────────────────────────
+
+    protected override void OnParametersSet()
+    {
+        if (!ReferenceEquals(Page, _previousPage))
+        {
+            _previousPage = Page;
+            if (_isNavigatingInternally)
+            {
+                _isNavigatingInternally = false;
+            }
+            else
+            {
+                currentPage = 1;
+            }
+            UpdateVisiblePages();
+        }
+    }
+
+    private void UpdateVisiblePages()
+    {
+        const int window = 2;
+        int start = Math.Max(1, currentPage - window);
+        int end   = Math.Min(TotalPages, currentPage + window);
+        visiblePages = Enumerable.Range(start, end - start + 1).ToList();
+    }
+
+    // ── Navigation ───────────────────────────────────────────────────────────
+
+    private Task FireChanged()
+    {
+        _isNavigatingInternally = true;
+        return OnChanged.InvokeAsync(new PageQuery(currentPage, pageSize));
+    }
+
+    private async Task ChangePageSize() { currentPage = 1;                                     await FireChanged(); }
+    private async Task GoToFirst()      { currentPage = 1;                                     await FireChanged(); }
+    private async Task GoToPrevious()   { if (currentPage > 1)            currentPage--;       await FireChanged(); }
+    private async Task GoToNext()       { if (currentPage < TotalPages)   currentPage++;       await FireChanged(); }
+    private async Task GoToLast()       { currentPage = TotalPages;                          await FireChanged(); }
+    private async Task GoToPage(int n)  { currentPage = n;                                     await FireChanged(); }
+
+    // ── Sub-renderers ────────────────────────────────────────────────────────
+
+    private RenderFragment RenderPageSizeSelector => __builder =>
+    {
+        <div class="d-flex align-items-center gap-2">
+            <label class="form-label mb-0 text-muted small fw-bold">Registros por página:</label>
+            <select class="form-select form-select-sm" style="width: auto;"
+                    @bind="pageSize" @bind:after="ChangePageSize">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select>
+        </div>
+    };
+
+    private RenderFragment RenderPagination => __builder =>
+    {
+        <nav aria-label="Paginación de registros">
+            <ul class="pagination pagination-sm mb-0">
+                <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                    <button class="page-link" @onclick="GoToFirst"   title="Primera página"><i class="bi bi-chevron-double-left"></i></button>
+                </li>
+                <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                    <button class="page-link" @onclick="GoToPrevious"  title="Página anterior"><i class="bi bi-chevron-left"></i></button>
+                </li>
+                @foreach (var num in visiblePages)
+                {
+                    <li class="page-item @(num == currentPage ? "active" : "")">
+                        <button class="page-link" @onclick="() => GoToPage(num)">@num</button>
+                    </li>
+                }
+                <li class="page-item @(currentPage == TotalPages ? "disabled" : "")">
+                    <button class="page-link" @onclick="GoToNext" title="Página siguiente"><i class="bi bi-chevron-right"></i></button>
+                </li>
+                <li class="page-item @(currentPage == TotalPages ? "disabled" : "")">
+                    <button class="page-link" @onclick="GoToLast"    title="Última página"><i class="bi bi-chevron-double-right"></i></button>
+                </li>
+            </ul>
+        </nav>
+    };
+}

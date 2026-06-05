@@ -1,0 +1,145 @@
+@page "/administrar-clientes"
+@attribute [Authorize(Roles = "Admin, Employee")]
+@using SoftProg_WebApp.Models
+
+<PageTitle>Administrar Clientes</PageTitle>
+
+<div class="container mt-4 mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-people-fill me-2"></i>Administrar Clientes</h2>
+        <AuthorizeView Roles="Admin">
+            <a href="/crear-cliente" class="btn btn-success shadow-sm">
+                <i class="bi bi-person-plus-fill me-1"></i>Crear Cliente
+            </a>
+        </AuthorizeView>
+    </div>
+
+    <!-- Filtros -->
+    <div class="card mb-4 shadow-sm border-0">
+        <div class="card-body">
+            <h5 class="card-title mb-3 fw-bold text-secondary">Filtros de Búsqueda</h5>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label text-muted small fw-bold">Nombre</label>
+                    <input type="text" class="form-control form-control-sm" @bind="filtroNombre" placeholder="Nombre del cliente..." />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label text-muted small fw-bold">Apellido Paterno</label>
+                    <input type="text" class="form-control form-control-sm" @bind="filtroApellido" placeholder="Apellido paterno..." />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label text-muted small fw-bold">DNI</label>
+                    <input type="text" class="form-control form-control-sm" @bind="filtroDNI" placeholder="DNI del cliente..." />
+                </div>
+                <div class="col-md-12 d-flex align-items-end gap-2">
+                    <button class="btn btn-primary btn-sm px-4 shadow-sm" @onclick="AplicarFiltros">
+                        <i class="bi bi-search me-1"></i>Buscar
+                    </button>
+                    <button class="btn btn-outline-secondary btn-sm px-4" @onclick="LimpiarFiltros">
+                        <i class="bi bi-x-circle me-1"></i>Limpiar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla paginada de clientes -->
+    <PaginatedTable TItem="Cliente" Page="paginaClientes" OnChanged="OnPageChanged">
+        <TableHeader>
+            <tr>
+                <th class="ps-3">ID</th>
+                <th>DNI</th>
+                <th>Nombre</th>
+                <th>Apellido Paterno</th>
+                <th class="text-center pe-3">Acciones</th>
+            </tr>
+        </TableHeader>
+        <RowTemplate Context="cliente">
+            <tr>
+                <td class="ps-3"><span class="badge bg-secondary">#@cliente.Id</span></td>
+                <td><span class="badge bg-light text-secondary border">@cliente.DNI</span></td>
+                <td class="fw-medium">@cliente.Nombre</td>
+                <td>@cliente.ApellidoPaterno</td>
+                <td class="text-center pe-3">
+                    <button class="btn btn-sm btn-outline-primary"
+                            @onclick="() => VerDetalles(cliente.Id)">
+                        <i class="bi bi-eye me-1"></i>Ver
+                    </button>
+                </td>
+            </tr>
+        </RowTemplate>
+    </PaginatedTable>
+</div>
+
+@code {
+    private List<Cliente> todosLosClientes = new();
+    private List<Cliente> clientesFiltrados = new();
+
+    private TablePage<Cliente> paginaClientes = new();
+    private PageQuery queryActual = new(1, 10);
+
+    // Filtros
+    private string filtroNombre = "";
+    private string filtroApellido = "";
+    private string filtroDNI = "";
+
+    protected override void OnInitialized()
+    {
+        todosLosClientes = Cliente.ObtenerClientesEstaticos();
+        LimpiarFiltros();
+    }
+
+    private void VerDetalles(int idCliente)
+    {
+        Console.WriteLine($"Viendo detalles del cliente {idCliente}");
+    }
+
+    private void OnPageChanged(PageQuery query)
+    {
+        queryActual = query;
+        ActualizarPagina();
+    }
+
+    private void ActualizarPagina()
+    {
+        var total = clientesFiltrados.Count;
+        var skip = (queryActual.Page - 1) * queryActual.PageSize;
+        var items = clientesFiltrados.Skip(skip).Take(queryActual.PageSize).ToList();
+
+        paginaClientes = new TablePage<Cliente>
+        {
+            Items = items,
+            TotalRecords = total
+        };
+    }
+
+    private void AplicarFiltros()
+    {
+        var query = todosLosClientes.AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(filtroNombre))
+            query = query.Where(c => c.Nombre.Contains(filtroNombre, StringComparison.OrdinalIgnoreCase));
+
+        if (!string.IsNullOrWhiteSpace(filtroApellido))
+            query = query.Where(c => c.ApellidoPaterno.Contains(filtroApellido, StringComparison.OrdinalIgnoreCase));
+
+        if (!string.IsNullOrWhiteSpace(filtroDNI))
+            query = query.Where(c => c.DNI.Contains(filtroDNI, StringComparison.OrdinalIgnoreCase));
+
+        clientesFiltrados = query.ToList();
+        
+        queryActual = new PageQuery(1, queryActual.PageSize);
+        ActualizarPagina();
+    }
+
+    private void LimpiarFiltros()
+    {
+        filtroNombre = "";
+        filtroApellido = "";
+        filtroDNI = "";
+        clientesFiltrados = new List<Cliente>(todosLosClientes);
+        
+        queryActual = new PageQuery(1, queryActual.PageSize);
+        ActualizarPagina();
+    }
+}
