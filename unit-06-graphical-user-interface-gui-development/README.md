@@ -44,11 +44,11 @@ To handle large datasets efficiently, the application incorporates a generic pre
 
 ---
 
-### 2. ☕ SoftProg — Java Web Services *(Coming Soon)*
+### 2. ☕ SoftProg — Java Web Services
 
 **Folder:** [`softprog/`](softprog/)
 
-A multi-tier modular **Java enterprise application** that will expose a set of **web services** to be consumed by the Blazor front-end and other clients. It is built as a multi-module **Apache Maven** project and demonstrates software architecture best practices by strictly separating concerns across layers.
+A multi-tier modular **Java enterprise application** that exposes a set of **web services** to be consumed by the Blazor front-end and other clients. It is built as a multi-module **Apache Maven** project and demonstrates software architecture best practices by strictly separating concerns across layers.
 
 #### Project Modules
 
@@ -58,7 +58,9 @@ softprog/
 ├── softprog-db-manager      → JDBC connection & transaction management
 ├── softprog-dao             → Data Access Object (CRUD) layer
 ├── softprog-business-logic  → Business rules & transaction orchestration
-└── softprog-test            → Integration & entry-point test drivers
+├── softprog-test            → Integration & entry-point test drivers
+├── softprog-ws              → SOAP-based Web Services (JAX-WS)
+└── softprog-rs              → RESTful Web Services (Jakarta REST)
 ```
 
 | Module | Responsibility |
@@ -68,21 +70,7 @@ softprog/
 | `softprog-dao` | SQL CRUD operations: `AreaDAOImpl`, `CustomerDAOImpl`, `EmployeeDAOImpl`, `ProductDAOImpl`, `SalesOrderDAOImpl` |
 | `softprog-business-logic` | Business logic orchestration: `SalesOrderBLImpl`, `BusinessLogicException` |
 | `softprog-test` | Test drivers: `TestAreaDAOMain`, `TestProductDAOMain`, `TestSalesOrderBLMain` |
-
-> [!NOTE]
-> The web service layer (REST endpoints) is currently under development and will be added in a future iteration of this unit.
+| `softprog-ws` | SOAP Web Services layer exposing operational endpoints (e.g., `CustomerWS` for paginated queries) using Jakarta XML Web Services (JAX-WS) |
+| `softprog-rs` | RESTful Web Services layer exposing REST resources (e.g., `FilmsRS` returning JSON) using Jakarta REST (JAX-RS) |
 
 > 📖 See [SoftProg README](softprog/README.md) for prerequisites, database configuration, and build instructions.
-
----
-
-## Educational Context
-
-Both projects belong to the **Programming 3 (2026-01)** course at PUCP and provide hands-on exposure to:
-
-- Component-based GUI development with Blazor Server.
-- Authentication, authorization, and role-based access control.
-- Generic and reusable UI components (pagination, master-detail views).
-- Multi-tier Java application architecture (Model → DAO → Business Logic).
-- JDBC-based data persistence and transaction management.
-- RESTful web service design *(coming soon)*.

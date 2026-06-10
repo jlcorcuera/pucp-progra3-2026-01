@@ -962,3 +962,81 @@ Access URL: `http://localhost:8080/softprog-rs-1.0-SNAPSHOT/hello-servlet`
 
 * **`SaludoDTO.java`**: Models a simple JSON structure with a `message` string field.
 * **`AlumnoDTO.java`**: Models student domain fields containing `codigo`, `nombre`, and `apellido`.
+
+---
+
+## 🔄 Case Study: Java Web Services (`softprog`) & Blazor Web Client (`SoftProg-WebApp`)
+
+This unit includes a complete implementation of Java-based enterprise web services (`softprog`) and their integration with a C# front-end application (`SoftProg-WebApp`) built on Blazor Server.
+
+### 1. The Java Backend: `softprog`
+The `softprog` directory is structured as a multi-tier modular Maven application containing:
+* **`softprog-ws` (SOAP):** Exposes SOAP services such as `CustomerWS` for client retrieval.
+* **`softprog-rs` (REST):** Exposes lightweight JSON resource endpoints such as `FilmsRS`.
+
+For example, `CustomerWS.java` exposes a paginated customer query operation:
+```java
+@WebService(
+    serviceName = "CustomerWS",
+    targetNamespace = "http://services.softprog.pucp.edu.pe/"
+)
+public class CustomerWS {
+    private CustomerBL customerBL = new CustomerBLImpl();
+
+    @WebMethod(operationName = "search")
+    public CustomerSearchResultDTO search(String name, String firstName, String docNumber, int page, int recordsPerPage) {
+        CustomerSearchResultDTO customerSearchResultDTO = new CustomerSearchResultDTO();
+        try {
+            customerSearchResultDTO.setTotalCount(customerBL.totalNumberOfRecords(name, firstName, docNumber));
+            customerSearchResultDTO.setPageData(customerBL.fetchPage(name, firstName, docNumber, page, recordsPerPage));
+        } catch (BusinessLogicException e) {
+            throw new RuntimeException(e);
+        }
+        return customerSearchResultDTO;
+    }
+}
+```
+
+### 2. The Blazor Frontend: `SoftProg-WebApp`
+The C# client application (`SoftProg-WebApp`) consumes the backend services using auto-generated client proxies.
+
+#### SOAP Service Consumption in Blazor
+1. **Service Reference:** Registered inside the project's **Connected Services** section, referencing the WSDL:
+   `http://localhost:8080/softprog-ws-1.0-SNAPSHOT/CustomerWS?wsdl`
+2. **Page Consumption (`AdministrarClientes.razor`):** Instantiates the C# proxy `CustomerWSClient` and invokes the SOAP query directly within the table pagination code:
+```csharp
+@code {
+    private CustomerWSClient customerWSClient = new CustomerWSClient();
+    private List<Cliente> todosLosClientes = new();
+    private TablePage<Cliente> paginaClientes = new();
+    private PageQuery queryActual = new(1, 3);
+
+    private void ActualizarPagina()
+    {
+        // Call the auto-generated SOAP proxy client
+        customerSearchResultDTO results = customerWSClient.search(
+            filtroNombre, filtroApellido, filtroDNI, 
+            queryActual.Page, queryActual.PageSize
+        );
+        
+        // Map raw SOAP payload arrays to Blazor local data models
+        customer[] pageData = results.pageData;
+        todosLosClientes.Clear();
+        foreach (customer customer in pageData)
+        {
+            todosLosClientes.Add(new Cliente {
+                DNI = customer.documentNumber,
+                Nombre = customer.name,
+                ApellidoPaterno = customer.lastName
+            });
+        }
+        
+        paginaClientes = new TablePage<Cliente>
+        {
+            Items = todosLosClientes,
+            TotalRecords = results.totalCount
+        };
+    }
+}
+```
+

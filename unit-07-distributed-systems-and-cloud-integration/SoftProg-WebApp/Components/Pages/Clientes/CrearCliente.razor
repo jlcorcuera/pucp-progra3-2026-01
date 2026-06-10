@@ -1,0 +1,110 @@
+@page "/crear-cliente"
+@attribute [Authorize(Roles = "Admin")]
+@using SoftProg_WebApp.Models
+@inject NavigationManager NavigationManager
+
+<PageTitle>Crear Cliente</PageTitle>
+
+<div class="container mt-4 mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-primary">
+            <i class="bi bi-person-plus-fill me-2"></i>Crear Nuevo Cliente
+        </h2>
+        <a href="/administrar-clientes" class="btn btn-outline-secondary shadow-sm">
+            <i class="bi bi-arrow-left me-1"></i>Volver a la Lista
+        </a>
+    </div>
+
+    <div class="card shadow border-0 rounded-4">
+        <div class="card-body p-4">
+            <form @onsubmit="GuardarCliente" @onsubmit:preventDefault>
+                <h5 class="card-title mb-4 fw-bold text-secondary border-bottom pb-2">
+                    <i class="bi bi-person-lines-fill me-2"></i>Información del Cliente
+                </h5>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold text-muted small">DNI</label>
+                        <div class="input-group shadow-sm">
+                            <span class="input-group-text bg-light"><i class="bi bi-card-text text-secondary"></i></span>
+                            <input type="text"
+                                   class="form-control @(mostrarErrores && string.IsNullOrWhiteSpace(nuevoCliente.DNI) ? "is-invalid" : "")"
+                                   @bind="nuevoCliente.DNI"
+                                   placeholder="Ej: 12345678"
+                                   maxlength="20"
+                                   required />
+                            @if (mostrarErrores && string.IsNullOrWhiteSpace(nuevoCliente.DNI))
+                            {
+                                <div class="invalid-feedback">El DNI es obligatorio.</div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold text-muted small">Nombre</label>
+                        <div class="input-group shadow-sm">
+                            <span class="input-group-text bg-light"><i class="bi bi-person text-secondary"></i></span>
+                            <input type="text"
+                                   class="form-control @(mostrarErrores && string.IsNullOrWhiteSpace(nuevoCliente.Nombre) ? "is-invalid" : "")"
+                                   @bind="nuevoCliente.Nombre"
+                                   placeholder="Nombre(s) del cliente"
+                                   required />
+                            @if (mostrarErrores && string.IsNullOrWhiteSpace(nuevoCliente.Nombre))
+                            {
+                                <div class="invalid-feedback">El nombre es obligatorio.</div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold text-muted small">Apellido Paterno</label>
+                        <div class="input-group shadow-sm">
+                            <span class="input-group-text bg-light"><i class="bi bi-person-badge text-secondary"></i></span>
+                            <input type="text"
+                                   class="form-control @(mostrarErrores && string.IsNullOrWhiteSpace(nuevoCliente.ApellidoPaterno) ? "is-invalid" : "")"
+                                   @bind="nuevoCliente.ApellidoPaterno"
+                                   placeholder="Apellido paterno"
+                                   required />
+                            @if (mostrarErrores && string.IsNullOrWhiteSpace(nuevoCliente.ApellidoPaterno))
+                            {
+                                <div class="invalid-feedback">El apellido paterno es obligatorio.</div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="mb-4 text-muted" />
+
+                <div class="d-flex justify-content-end">
+                    <a href="/administrar-clientes" class="btn btn-secondary px-4 me-2 shadow-sm">Cancelar</a>
+                    <button type="submit" class="btn btn-success px-4 shadow-sm">
+                        <i class="bi bi-check-circle me-1"></i>Guardar Cliente
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@code {
+    private Cliente nuevoCliente = new();
+    private bool mostrarErrores = false;
+
+    private void GuardarCliente()
+    {
+        mostrarErrores = true;
+
+        if (string.IsNullOrWhiteSpace(nuevoCliente.DNI)
+            || string.IsNullOrWhiteSpace(nuevoCliente.Nombre)
+            || string.IsNullOrWhiteSpace(nuevoCliente.ApellidoPaterno))
+        {
+            return;
+        }
+
+        // Assign a new Id based on current max
+        var clientes = Cliente.ObtenerClientesEstaticos();
+        nuevoCliente.Id = clientes.Any() ? clientes.Max(c => c.Id) + 1 : 1;
+
+        NavigationManager.NavigateTo("/administrar-clientes");
+    }
+}
