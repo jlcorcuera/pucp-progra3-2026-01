@@ -139,10 +139,10 @@ public class CustomerDAOImpl implements CustomerDAO {
                 pstm.setString(++index, firstName);
             }
             if (lastName != null && !lastName.isEmpty()) {
-                pstm.setString(++index, firstName);
+                pstm.setString(++index, lastName);
             }
             if (docNumber != null && !docNumber.isEmpty()) {
-                pstm.setString(++index, firstName);
+                pstm.setString(++index, docNumber);
             }
             int offset = (page - 1) * recordsPerPage;
             pstm.setInt(++index, offset);
