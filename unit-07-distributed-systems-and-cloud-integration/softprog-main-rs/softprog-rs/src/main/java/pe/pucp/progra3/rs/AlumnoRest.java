@@ -2,7 +2,7 @@ package pe.pucp.progra3.rs;
 
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
-import pe.pucp.progra3.rs.dto.AlumnoDTO;
+import pe.pucp.progra3.softprog.rs.dto.AlumnoDTO;
 
 import java.util.ArrayList;
 import java.util.List;

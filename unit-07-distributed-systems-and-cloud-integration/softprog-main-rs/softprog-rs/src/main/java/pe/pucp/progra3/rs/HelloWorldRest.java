@@ -3,7 +3,7 @@ package pe.pucp.progra3.rs;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
-import pe.pucp.progra3.rs.dto.SaludoDTO;
+import pe.pucp.progra3.softprog.rs.dto.SaludoDTO;
 
 @Path("hello")
 public class HelloWorldRest {
