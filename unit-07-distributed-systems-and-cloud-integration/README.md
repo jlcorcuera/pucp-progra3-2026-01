@@ -774,7 +774,6 @@ internal class Program
             catch
             { 
                 resultado = int.Parse(json);
-            } 
             
             Console.WriteLine("Resultado de inserción: " + resultado);
             if (resultado != 0)
@@ -786,28 +785,85 @@ internal class Program
 }
 ```
 
----
-
 ## 📂 Reference Project: `softprog-main-rs`
 
-This project is a multi-module Maven project structured as follows:
+This project is a **multi-module Maven project** (`pe.pucp.progra3.rs:softprog-main-rs:1.0-SNAPSHOT`, `pom` packaging) composed of three modules — a shared DTO library, a JAX-RS web service, and a Java HTTP client. It targets **Java 25** and **Jakarta EE 11**.
+
+### Project Structure
 
 ```
 softprog-main-rs/
-├── pom.xml                   ← Parent project configuration (pom packaging)
-└── softprog-rs/              ← Web service module (war packaging)
-    ├── pom.xml               ← Module-specific dependencies and build configs
-    └── src/main/java/pe/pucp/progra3/rs/
-        ├── RestApplication.java
-        ├── HelloWorldRest.java
-        ├── AlumnoRest.java
-        ├── HelloServlet.java
-        └── dto/
-            ├── SaludoDTO.java
-            └── AlumnoDTO.java
+├── pom.xml                        ← Parent project (pom packaging, groups all modules)
+├── softprog-rs-dto/               ← Shared Data Transfer Object library (jar)
+│   ├── pom.xml
+│   └── src/main/java/pe/pucp/progra3/softprog/rs/dto/
+│       ├── AlumnoDTO.java
+│       └── SaludoDTO.java
+├── softprog-rs/                   ← JAX-RS Web Service module (war, deployed to GlassFish)
+│   ├── pom.xml
+│   └── src/main/java/pe/pucp/progra3/rs/
+│       ├── RestApplication.java
+│       ├── AlumnoRest.java
+│       ├── HelloWorldRest.java
+│       └── HelloServlet.java
+├── softprog-rs-client/            ← Java REST client module (jar, standalone)
+│   ├── pom.xml
+│   └── src/main/java/pe/pucp/progra3/rs/client/
+│       ├── TestRestClient.java
+│       └── utils/
+│           └── HttpClientUtils.java
+└── python_client_test.py          ← Python snippet for quick manual API testing
 ```
 
-### 1. Key Components & Class Reference
+### Module Dependencies
+
+| Module | Packaging | Depends On | Key Libraries |
+|---|---|---|---|
+| `softprog-rs-dto` | `jar` | — | — |
+| `softprog-rs` | `war` | `softprog-rs-dto` | `jakarta.ws.rs-api 4.0.0`, `jakarta.servlet-api 6.1.0` |
+| `softprog-rs-client` | `jar` | `softprog-rs-dto` | `jackson-databind 2.19.0` |
+
+---
+
+### 1. Shared DTOs (`softprog-rs-dto` module)
+
+DTOs are kept in a separate Maven module so both the server (`softprog-rs`) and client (`softprog-rs-client`) can share them without duplication.
+
+#### `AlumnoDTO.java`
+```java
+package pe.pucp.progra3.softprog.rs.dto;
+
+public class AlumnoDTO {
+    private String codigo;
+    private String nombre;
+    private String apellido;
+
+    public String getCodigo() { return codigo; }
+    public void setCodigo(String codigo) { this.codigo = codigo; }
+
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
+
+    public String getApellido() { return apellido; }
+    public void setApellido(String apellido) { this.apellido = apellido; }
+}
+```
+
+#### `SaludoDTO.java`
+```java
+package pe.pucp.progra3.softprog.rs.dto;
+
+public class SaludoDTO {
+    private String message;
+
+    public String getMessage() { return message; }
+    public void setMessage(String message) { this.message = message; }
+}
+```
+
+---
+
+### 2. JAX-RS Web Service (`softprog-rs` module)
 
 #### A. Application Configuration (`RestApplication.java`)
 Configures the base URI prefix mapping for all REST resources in the application:
@@ -821,7 +877,7 @@ import jakarta.ws.rs.core.Application;
 public class RestApplication extends Application {
 }
 ```
-With this configuration, all endpoints exposed inside JAX-RS resources will be mapped relative to the `/services` path (e.g., `http://localhost:8080/softprog-rs-1.0-SNAPSHOT/services/...`).
+With this configuration, all endpoints are mapped relative to the `/services` path (e.g., `http://localhost:8080/softprog-rs-1.0-SNAPSHOT/services/...`).
 
 #### B. Greeting Web Service (`HelloWorldRest.java`)
 Exposes simple test routes demonstrating string and object serialization:
@@ -831,7 +887,7 @@ package pe.pucp.progra3.rs;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
-import pe.pucp.progra3.rs.dto.SaludoDTO;
+import pe.pucp.progra3.softprog.rs.dto.SaludoDTO;
 
 @Path("hello")
 public class HelloWorldRest {
@@ -851,17 +907,17 @@ public class HelloWorldRest {
     }
 }
 ```
-* **GET `/services/hello`** returns plaintext: `"Hello from my first rest service"`.
-* **GET `/services/hello/hello`** returns JSON: `{"message":"Hello from JSON object"}`.
+* **GET `/services/hello`** → returns plaintext: `"Hello from my first rest service"`.
+* **GET `/services/hello/hello`** → returns JSON: `{"message":"Hello from JSON object"}`.
 
 #### C. Student Entity CRUD Service (`AlumnoRest.java`)
-A fully-featured REST controller implementing annotations for POST, GET, DELETE, path variables, and query parameters:
+A fully-featured REST controller demonstrating `@POST`, `@GET`, `@DELETE`, `@PathParam`, and `@QueryParam`:
 ```java
 package pe.pucp.progra3.rs;
 
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
-import pe.pucp.progra3.rs.dto.AlumnoDTO;
+import pe.pucp.progra3.softprog.rs.dto.AlumnoDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -899,7 +955,6 @@ public class AlumnoRest {
     @Path("delete/{id}")
     @DELETE
     public Response eliminarAlumno(@PathParam("id") Integer id) {
-        // Business logic to delete student record goes here
         return Response.ok().build();
     }
 
@@ -909,7 +964,7 @@ public class AlumnoRest {
                                   @QueryParam("last_name") String lastName) {
         List<AlumnoDTO> myList = new ArrayList<>();
         int n = 10;
-        for(int i = 1; i <= n; i++) {
+        for (int i = 1; i <= n; i++) {
             AlumnoDTO alumnoDTO = new AlumnoDTO();
             alumnoDTO.setCodigo(i + "");
             alumnoDTO.setNombre("Nombre " + i);
@@ -920,11 +975,15 @@ public class AlumnoRest {
 }
 ```
 
-* **POST `/services/alumno`**: Registers a student using JSON body content.
-* **GET `/services/alumno/{id}`**: Extracts ID path parameter.
-* **GET `/services/alumno/{id_alumno}/apoderado/{id_apoderado}`**: Demonstrates using multiple path parameters.
-* **DELETE `/services/alumno/delete/{id}`**: Deletes a student using DELETE HTTP verb, returning empty 200 OK.
-* **GET `/services/alumno/search?first_name=X&last_name=Y`**: Illustrates search filtering using query parameters.
+**Endpoint Summary:**
+
+| Method | Path | Description |
+|---|---|---|
+| `POST` | `/services/alumno` | Registers a new student (JSON body). Returns student with assigned code. |
+| `GET` | `/services/alumno/{id}` | Retrieves a student by numeric path parameter. |
+| `GET` | `/services/alumno/{id_alumno}/apoderado/{id_apoderado}` | Demonstrates **multiple path parameters** in a single route. |
+| `DELETE` | `/services/alumno/delete/{id}` | Deletes a student record; returns HTTP 200 OK. |
+| `GET` | `/services/alumno/search?first_name=X&last_name=Y` | Searches students using **query parameters**. |
 
 #### D. Base Servlet Integration (`HelloServlet.java`)
 Baseline Jakarta Servlet mapping demonstrating traditional Java web servlet configuration:
@@ -958,10 +1017,285 @@ public class HelloServlet extends HttpServlet {
 ```
 Access URL: `http://localhost:8080/softprog-rs-1.0-SNAPSHOT/hello-servlet`
 
-### 2. Data Transfer Objects (DTOs)
+---
 
-* **`SaludoDTO.java`**: Models a simple JSON structure with a `message` string field.
-* **`AlumnoDTO.java`**: Models student domain fields containing `codigo`, `nombre`, and `apellido`.
+### 3. Java REST Client (`softprog-rs-client` module)
+
+This standalone module demonstrates consuming the `softprog-rs` endpoints programmatically using Java's native `HttpClient` and the **Jackson** library for JSON serialization.
+
+#### A. Generic HTTP Utility (`HttpClientUtils.java`)
+A reusable generic class encapsulating GET and POST HTTP operations with Jackson deserialization:
+```java
+package pe.pucp.progra3.rs.client.utils;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+
+public class HttpClientUtils<T> {
+
+    public T get(String url, TypeReference<T> typeReference) throws IOException, InterruptedException {
+        HttpClient client = HttpClient.newHttpClient();
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        String json = response.body();
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        T resultado = objectMapper.readValue(json, typeReference);
+        return resultado;
+    }
+
+    public T post(String url, Object data, TypeReference<T> typeReference) throws IOException, InterruptedException {
+        HttpClient client = HttpClient.newHttpClient();
+
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonRequest = mapper.writeValueAsString(data);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(jsonRequest))
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        String json = response.body();
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        T resultado = objectMapper.readValue(json, typeReference);
+        return resultado;
+    }
+}
+```
+
+> **Key design pattern:** `HttpClientUtils<T>` is generic and accepts a `TypeReference<T>` to enable correct Jackson deserialization of both single objects and collections (e.g., `List<AlumnoDTO>`), avoiding type erasure issues.
+
+#### B. Test Client Entry Point (`TestRestClient.java`)
+Demonstrates how to use `HttpClientUtils` to perform GET (search) and POST (register) calls:
+```java
+package pe.pucp.progra3.rs.client;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import pe.pucp.progra3.rs.client.utils.HttpClientUtils;
+import pe.pucp.progra3.softprog.rs.dto.AlumnoDTO;
+
+import java.io.IOException;
+import java.util.List;
+
+public class TestRestClient {
+
+    public static void main(String[] args) throws IOException, InterruptedException {
+        // GET: Search students by first and last name (query parameters)
+        String url = "http://localhost:8080/softprog-rs-1.0-SNAPSHOT/services/alumno/search?first_name=Jose&last_name=Corcuera";
+
+        List<AlumnoDTO> resultado = new HttpClientUtils<List<AlumnoDTO>>().get(url, new TypeReference<List<AlumnoDTO>>() {});
+        for (AlumnoDTO alumno : resultado) {
+            System.out.println(alumno.getCodigo() + " " + alumno.getNombre());
+        }
+
+        // POST: Register a new student
+        url = "http://localhost:8080/softprog-rs-1.0-SNAPSHOT/services/alumno";
+
+        AlumnoDTO nuevoAlumno = new AlumnoDTO();
+        nuevoAlumno.setNombre("Alumno java");
+        nuevoAlumno.setApellido("Apellido java");
+
+        AlumnoDTO alumnoRespuesta = new HttpClientUtils<AlumnoDTO>().post(url, nuevoAlumno, new TypeReference<AlumnoDTO>() {});
+        System.out.println(alumnoRespuesta.getCodigo());
+    }
+}
+```
+
+---
+
+### 4. Python Quick Test (`python_client_test.py`)
+
+A minimal Python script using the `requests` library to manually test the POST endpoint without needing a compiled client:
+
+```python
+import requests
+import json
+
+url = "http://localhost:8080/softprog-rs-1.0-SNAPSHOT/services/alumno"
+payload = json.dumps({
+  "nombre": "Jose2222",
+  "apellido": "Corcuera2222"
+})
+headers = {
+  'Content-Type': 'application/json'
+}
+response = requests.request("POST", url, headers=headers, data=payload)
+print(response.text)
+```
+
+---
+
+## 🖥️ Reference Project: `CSharpRestClient`
+
+This is a **.NET 10 Console Application** (C#) that consumes the `softprog-rs` JAX-RS service. It uses **Newtonsoft.Json** (`13.0.4`) for JSON serialization and a reusable generic `HttpClientUtils<T>` class built on top of `HttpWebRequest`.
+
+### Project Structure
+
+```
+CSharpRestClient/
+├── CSharpRestClient.slnx           ← Solution file
+└── CSharpRestClient/
+    ├── CSharpRestClient.csproj     ← .NET 10, Exe, Newtonsoft.Json 13.0.4
+    ├── AlumnoDTO.cs                ← DTO matching the Java AlumnoDTO
+    ├── HttpClientUtils.cs          ← Generic HTTP utility (GET + POST)
+    └── Program.cs                  ← Entry point demonstrating GET and POST calls
+```
+
+### 1. Project File (`CSharpRestClient.csproj`)
+```xml
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+  </ItemGroup>
+
+</Project>
+```
+
+### 2. Data Transfer Object (`AlumnoDTO.cs`)
+Maps JSON property names from the Java service using `[JsonProperty]` attributes:
+```csharp
+using Newtonsoft.Json;
+using System;
+
+namespace CSharpRestClient
+{
+    public class AlumnoDTO
+    {
+        private String codigo;
+        private String nombre;
+        private String apellido;
+
+        [JsonProperty("codigo")]
+        public string Codigo { get => codigo; set => codigo = value; }
+        [JsonProperty("nombre")]
+        public string Nombre { get => nombre; set => nombre = value; }
+        [JsonProperty("apellido")]
+        public string Apellido { get => apellido; set => apellido = value; }
+    }
+}
+```
+
+### 3. Generic HTTP Utility (`HttpClientUtils.cs`)
+A reusable generic class encapsulating GET and POST HTTP calls using `HttpWebRequest`:
+```csharp
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Net;
+
+namespace CSharpRestClient
+{
+    public class HttpClientUtils<T>
+    {
+        public T get(string url)
+        {
+            HttpWebRequest req = (HttpWebRequest)WebRequest.Create($"{url}");
+            req.Method = "GET";
+            req.Accept = "application/json";
+            req.Timeout = 30000;
+
+            using (HttpWebResponse resp = (HttpWebResponse)req.GetResponse())
+            using (StreamReader sr = new StreamReader(resp.GetResponseStream()))
+            {
+                string json = sr.ReadToEnd();
+                T result = JsonConvert.DeserializeObject<T>(json);
+                return result;
+            }
+        }
+
+        public T post(string url, Object data)
+        {
+            HttpWebRequest req = (HttpWebRequest)WebRequest.Create($"{url}");
+            req.Method = "POST";
+            req.Accept = "application/json";
+            req.ContentType = "application/json";
+            req.Timeout = 30000;
+
+            string jsonBody = JsonConvert.SerializeObject(data);
+
+            using (StreamWriter sw = new StreamWriter(req.GetRequestStream()))
+            {
+                sw.Write(jsonBody);
+                sw.Flush();
+            }
+
+            using (HttpWebResponse resp = (HttpWebResponse)req.GetResponse())
+            using (StreamReader sr = new StreamReader(resp.GetResponseStream()))
+            {
+                string json = sr.ReadToEnd();
+                T result = JsonConvert.DeserializeObject<T>(json);
+                return result;
+            }
+        }
+    }
+}
+```
+
+> **Comparison with Java client:** The C# `HttpClientUtils<T>` mirrors the Java version but uses `HttpWebRequest` instead of `java.net.http.HttpClient`, and Newtonsoft.Json instead of Jackson. Both share the same generic pattern.
+
+### 4. Entry Point (`Program.cs`)
+Demonstrates a GET (student search) and POST (student registration) against the `softprog-rs` service:
+```csharp
+using System;
+using System.Collections.Generic;
+using Newtonsoft.Json;
+using CSharpRestClient;
+
+class Program
+{
+    private const string BASE_URL = "http://localhost:8080/softprog-rs-1.0-SNAPSHOT/services/alumno/search?first_name=Jose&last_name=Corcuera";
+
+    static void Main(string[] args)
+    {
+        // GET: Search students by query parameters
+        List<AlumnoDTO> results = new HttpClientUtils<List<AlumnoDTO>>().get(BASE_URL);
+        foreach (AlumnoDTO alumno in results)
+        {
+            Console.WriteLine(alumno.Codigo + ". " + alumno.Nombre);
+        }
+
+        // POST: Register a new student
+        String urlCrearAlumno = "http://localhost:8080/softprog-rs-1.0-SNAPSHOT/services/alumno";
+        AlumnoDTO nuevoAlumno = new AlumnoDTO();
+        nuevoAlumno.Nombre = "Nombre Java";
+        nuevoAlumno.Apellido = "Apellido Java";
+        AlumnoDTO response = new HttpClientUtils<AlumnoDTO>().post(urlCrearAlumno, nuevoAlumno);
+        Console.WriteLine(response.Codigo);
+    }
+}
+```
+
+**Expected Output:**
+```
+1. Nombre 1
+2. Nombre 2
+...
+10. Nombre 10
+NUEVO CODIGO
+```
 
 ---
 
