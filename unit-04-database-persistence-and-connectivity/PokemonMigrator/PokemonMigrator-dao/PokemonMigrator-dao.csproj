@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>PokemonMigrator_dao</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PokemonMigrator-dbmanager\PokemonMigrator-dbmanager.csproj" />
+    <ProjectReference Include="..\PokemonMigrator-model\PokemonMigrator-model.csproj" />
+  </ItemGroup>
+
+</Project>

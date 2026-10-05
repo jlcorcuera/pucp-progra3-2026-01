@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="PokemonMigrator-console/PokemonMigrator-console.csproj" />
+  <Project Path="PokemonMigrator-dao/PokemonMigrator-dao.csproj" />
+  <Project Path="PokemonMigrator-dbmanager/PokemonMigrator-dbmanager.csproj" />
+  <Project Path="PokemonMigrator-model/PokemonMigrator-model.csproj" />
+  <Project Path="PokemonMigrator-service/PokemonMigrator-service.csproj" />
+</Solution>
