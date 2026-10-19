@@ -1,0 +1,158 @@
+@page "/administrar-ordenes"
+@attribute [Authorize(Roles = "Admin, Employee")]
+@using SoftProg_WebApp.Models
+
+<PageTitle>Administrar Órdenes de Venta</PageTitle>
+
+
+        <div class="container mt-4 mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Administrar Órdenes de Venta</h2>
+                <AuthorizeView Roles="Admin">
+                    <a href="/crear-orden" class="btn btn-success shadow-sm">Crear Orden</a>
+                </AuthorizeView>
+            </div>
+
+            <!-- Filtros -->
+            <div class="card mb-4 shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title mb-3 fw-bold text-secondary">Filtros de Búsqueda</h5>
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label text-muted small fw-bold">Cliente</label>
+                            <input type="text" class="form-control form-control-sm" @bind="filtroCliente" placeholder="Nombre de cliente..." />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label text-muted small fw-bold">Empleado</label>
+                            <input type="text" class="form-control form-control-sm" @bind="filtroEmpleado" placeholder="Nombre de empleado..." />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label text-muted small fw-bold">Fecha Desde</label>
+                            <input type="date" class="form-control form-control-sm" @bind="filtroFechaDesde" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label text-muted small fw-bold">Fecha Hasta</label>
+                            <input type="date" class="form-control form-control-sm" @bind="filtroFechaHasta" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label text-muted small fw-bold">Monto Mínimo</label>
+                            <input type="number" class="form-control form-control-sm" @bind="filtroMontoMinimo" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label text-muted small fw-bold">Monto Máximo</label>
+                            <input type="number" class="form-control form-control-sm" @bind="filtroMontoMaximo" />
+                        </div>
+                        <div class="col-md-6 d-flex align-items-end">
+                            <button class="btn btn-primary btn-sm me-2 px-4 shadow-sm" @onclick="AplicarFiltros">Buscar</button>
+                            <button class="btn btn-outline-secondary btn-sm px-4" @onclick="LimpiarFiltros">Limpiar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabla de Resultados -->
+            <div class="table-responsive shadow-sm rounded">
+                <table class="table table-hover align-middle mb-0 bg-white">
+                    <thead class="table-dark">
+                        <tr>
+                            <th class="ps-3">ID Orden</th>
+                            <th>Cliente</th>
+                            <th>Empleado</th>
+                            <th>Fecha y Hora</th>
+                            <th class="text-end">Monto Total</th>
+                            <th class="text-center pe-3">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (ordenesFiltradas.Any())
+                        {
+                            @foreach (var orden in ordenesFiltradas)
+                            {
+                                <tr>
+                                    <td class="ps-3"><span class="badge bg-secondary">#@orden.Id</span></td>
+                                    <td class="fw-medium">@(orden.Cliente != null ? $"{orden.Cliente.Nombre} {orden.Cliente.ApellidoPaterno}" : "")</td>
+                                    <td>@(orden.Empleado != null ? $"{orden.Empleado.Nombre} {orden.Empleado.ApellidoPaterno}" : "")</td>
+                                    <td>@orden.FechaHora.ToString("dd/MM/yyyy HH:mm")</td>
+                                    <td class="text-end fw-bold text-success">@orden.MontoTotal.ToString("C2")</td>
+                                    <td class="text-center pe-3">
+                                        <button class="btn btn-sm btn-outline-primary" @onclick="() => VerDetalles(orden.Id)">Ver</button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center py-5 text-muted">No se encontraron órdenes que coincidan con los filtros seleccionados.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+@code {
+    private List<OrdenVenta> todasLasOrdenes = new();
+    private List<OrdenVenta> ordenesFiltradas = new();
+
+    // Filtros
+    private string filtroCliente = "";
+    private string filtroEmpleado = "";
+    private DateTime? filtroFechaDesde;
+    private DateTime? filtroFechaHasta;
+    private decimal? filtroMontoMinimo;
+    private decimal? filtroMontoMaximo;
+
+    protected override void OnInitialized()
+    {
+        todasLasOrdenes = OrdenVenta.ObtenerDatosEstaticos();
+        LimpiarFiltros();
+    }
+
+    private void VerDetalles(int idOrden)
+    {
+        Console.WriteLine($"Viendo detalles de la orden {idOrden}");
+    }
+
+    private void AplicarFiltros()
+    {
+        var query = todasLasOrdenes.AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(filtroCliente))
+            query = query.Where(o => o.Cliente != null &&
+                                    (o.Cliente.Nombre.Contains(filtroCliente, StringComparison.OrdinalIgnoreCase) ||
+                                     o.Cliente.ApellidoPaterno.Contains(filtroCliente, StringComparison.OrdinalIgnoreCase)));
+
+        if (!string.IsNullOrWhiteSpace(filtroEmpleado))
+            query = query.Where(o => o.Empleado != null &&
+                                    (o.Empleado.Nombre.Contains(filtroEmpleado, StringComparison.OrdinalIgnoreCase) ||
+                                     o.Empleado.ApellidoPaterno.Contains(filtroEmpleado, StringComparison.OrdinalIgnoreCase)));
+
+        if (filtroFechaDesde.HasValue)
+            query = query.Where(o => o.FechaHora.Date >= filtroFechaDesde.Value.Date);
+
+        if (filtroFechaHasta.HasValue)
+            query = query.Where(o => o.FechaHora.Date <= filtroFechaHasta.Value.Date);
+
+        if (filtroMontoMinimo.HasValue)
+            query = query.Where(o => o.MontoTotal >= filtroMontoMinimo.Value);
+
+        if (filtroMontoMaximo.HasValue)
+            query = query.Where(o => o.MontoTotal <= filtroMontoMaximo.Value);
+
+        ordenesFiltradas = query.ToList();
+    }
+
+    private void LimpiarFiltros()
+    {
+        filtroCliente = "";
+        filtroEmpleado = "";
+        filtroFechaDesde = null;
+        filtroFechaHasta = null;
+        filtroMontoMinimo = null;
+        filtroMontoMaximo = null;
+
+        ordenesFiltradas = new List<OrdenVenta>(todasLasOrdenes);
+    }
+}

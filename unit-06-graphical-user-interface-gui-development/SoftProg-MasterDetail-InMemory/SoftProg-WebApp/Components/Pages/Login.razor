@@ -1,0 +1,86 @@
+@page "/"
+@attribute [AllowAnonymous]
+@layout LoginLayout
+
+<PageTitle>Iniciar Sesión - SoftProg</PageTitle>
+
+<div class="login-container">
+    <div class="card shadow border-0">
+        <div class="card-body p-4 p-sm-5">
+            <div class="text-center mb-4">
+                <div class="brand-logo-circle mb-3">
+                    <i class="bi bi-shield-lock-fill"></i>
+                </div>
+                <h3 class="fw-bold mb-1 text-dark">SoftProg</h3>
+                <p class="text-muted small mb-0">Plataforma de Administración y Ventas</p>
+            </div>
+
+            <!-- Changed from Blazor EditForm to standard HTML form posting to Minimal API -->
+            <form method="post" action="/auth/login" id="loginForm" @formname="loginForm">
+                <AntiforgeryToken />
+                
+                <div class="mb-3">
+                    <label for="usuario" class="form-label text-secondary fw-semibold small">Nombre de Usuario</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0"><i class="bi bi-person text-muted"></i></span>
+                        <input type="text" id="usuario" name="usuario" class="form-control border-start-0 ps-0" placeholder="Ingrese su usuario" required />
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <label for="contrasena" class="form-label text-secondary fw-semibold small mb-0">Contraseña</label>
+                        <a href="#" class="small text-decoration-none">¿Olvidó su contraseña?</a>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0"><i class="bi bi-lock text-muted"></i></span>
+                        <input type="password" id="contrasena" name="contrasena" class="form-control border-start-0 ps-0" placeholder="Ingrese su contraseña" required />
+                    </div>
+                </div>
+
+                @if (!string.IsNullOrWhiteSpace(Error))
+                {
+                    <div class="alert alert-danger p-2 small mb-3" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        Usuario o contraseña incorrectos.
+                    </div>
+                }
+
+                <div class="form-check mb-4">
+                    <input type="checkbox" id="rememberMe" name="rememberMe" class="form-check-input" />
+                    <label for="rememberMe" class="form-check-label text-muted small">
+                        Mantener sesión iniciada
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 py-2.5 fw-semibold">
+                    <span>Ingresar</span>
+                    <i class="bi bi-box-arrow-in-right ms-1"></i>
+                </button>
+            </form>
+            <!-- Demo credentials info panel -->
+            <div class="demo-credentials mt-4 pt-3 border-top">
+                <p class="text-muted small text-center fw-semibold mb-2">
+                    <i class="bi bi-info-circle me-1"></i>Usuarios de demostración
+                </p>
+                <div class="d-flex gap-2">
+                    <div class="demo-user-card flex-fill text-center p-2 rounded">
+                        <span class="badge bg-danger mb-1">Admin</span>
+                        <div class="small"><i class="bi bi-person-fill me-1 text-muted"></i><code>admin</code></div>
+                        <div class="small"><i class="bi bi-key-fill me-1 text-muted"></i><code>admin</code></div>
+                    </div>
+                    <div class="demo-user-card flex-fill text-center p-2 rounded">
+                        <span class="badge bg-primary mb-1">Employee</span>
+                        <div class="small"><i class="bi bi-person-fill me-1 text-muted"></i><code>employee</code></div>
+                        <div class="small"><i class="bi bi-key-fill me-1 text-muted"></i><code>employee</code></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [SupplyParameterFromQuery(Name = "error")]
+    public string? Error { get; set; }
+}

@@ -1,0 +1,559 @@
+@page "/crear-orden"
+@attribute [Authorize(Roles = "Admin")]
+@using SoftProg_WebApp.Models
+@inject NavigationManager NavigationManager
+
+<PageTitle>Crear Orden de Venta</PageTitle>
+
+<div class="container mt-4 mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-primary"><i class="bi bi-file-earmark-plus me-2"></i>Crear Nueva Orden de Venta</h2>
+        <a href="/administrar-ordenes" class="btn btn-outline-secondary shadow-sm">
+            <i class="bi bi-arrow-left me-1"></i>Volver a la Lista
+        </a>
+    </div>
+
+    <div class="card shadow border-0 rounded-4">
+        <div class="card-body p-4">
+            <form @onsubmit="GuardarOrden" @onsubmit:preventDefault>
+                <h5 class="card-title mb-4 fw-bold text-secondary border-bottom pb-2">
+                    <i class="bi bi-person-lines-fill me-2"></i>Información General de la Orden
+                </h5>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold text-muted small">Cliente</label>
+                        <div class="input-group shadow-sm">
+                            <span class="input-group-text bg-light"><i class="bi bi-person text-secondary"></i></span>
+                            <input type="text" class="form-control" value="@(nuevaOrden.Cliente != null ? $"{nuevaOrden.Cliente.Nombre} {nuevaOrden.Cliente.ApellidoPaterno}" : "")" readonly required placeholder="Busque un cliente..." />
+                            <button class="btn btn-primary" type="button" @onclick="AbrirBuscadorCliente" title="Buscar Cliente">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold text-muted small">Empleado</label>
+                        <div class="input-group shadow-sm">
+                            <span class="input-group-text bg-light"><i class="bi bi-briefcase text-secondary"></i></span>
+                            <input type="text" class="form-control" value="@(nuevaOrden.Empleado != null ? $"{nuevaOrden.Empleado.Nombre} {nuevaOrden.Empleado.ApellidoPaterno}" : "")" readonly required placeholder="Busque un empleado..." />
+                            <button class="btn btn-primary" type="button" @onclick="AbrirBuscadorEmpleado" title="Buscar Empleado">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold text-muted small">Fecha y Hora</label>
+                        <div class="input-group shadow-sm">
+                            <span class="input-group-text bg-light"><i class="bi bi-calendar-event text-secondary"></i></span>
+                            <input type="datetime-local" class="form-control" @bind="nuevaOrden.FechaHora" required />
+                        </div>
+                    </div>
+                </div>
+
+                <h5 class="card-title mb-3 fw-bold text-secondary border-bottom pb-2">
+                    <i class="bi bi-list-stars me-2"></i>Detalle de la Orden
+                </h5>
+                
+                <div class="table-responsive border rounded-3 mb-3 bg-white">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="text-center" style="width: 80px;">N° Línea</th>
+                                <th>Producto</th>
+                                <th class="text-center" style="width: 120px;">Cantidad</th>
+                                <th class="text-end" style="width: 150px;">Precio Unitario</th>
+                                <th class="text-end" style="width: 150px;">Subtotal</th>
+                                <th class="text-center" style="width: 100px;">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (nuevaOrden.Lineas.Any())
+                            {
+                                @foreach (var line in nuevaOrden.Lineas)
+                                {
+                                    <tr>
+                                        <td class="text-center">
+                                            <span class="badge bg-secondary rounded-pill py-2 px-3">#@line.NumeroLinea</span>
+                                        </td>
+                                        <td>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control border-end-0" 
+                                                       value="@(line.Producto?.Nombre ?? "Seleccione un producto...")" 
+                                                       readonly 
+                                                       style="background-color: #f8f9fa;" />
+                                                <button class="btn btn-primary" type="button" 
+                                                        @onclick="() => AbrirBuscadorProducto(line)">
+                                                    <i class="bi bi-search me-1"></i> Buscar
+                                                </button>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <input type="number" min="1" class="form-control text-center" 
+                                                   value="@line.Cantidad" 
+                                                   @onchange="(e) => ActualizarCantidad(line, e)" />
+                                        </td>
+                                        <td class="text-end fw-semibold text-secondary">
+                                            @line.PrecioUnitario.ToString("C2")
+                                        </td>
+                                        <td class="text-end fw-bold text-success">
+                                            @line.Subtotal.ToString("C2")
+                                        </td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-outline-danger btn-sm rounded-pill" 
+                                                    @onclick="() => EliminarLinea(line)">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="6" class="text-center py-4 text-muted">
+                                        <i class="bi bi-info-circle me-2"></i>No hay líneas en esta orden. Agregue una para comenzar.
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <button type="button" class="btn btn-outline-primary shadow-sm" @onclick="AgregarLinea">
+                        <i class="bi bi-plus-circle me-1"></i> Agregar Línea
+                    </button>
+                    <div class="d-flex align-items-center">
+                        <span class="fw-bold me-3 text-secondary">Total Acumulado:</span>
+                        <div class="input-group" style="width: 200px;">
+                            <span class="input-group-text bg-success-subtle border-success fw-bold text-success">$</span>
+                            <input type="number" step="0.01" min="0" class="form-control border-success text-end fw-bold text-success bg-white" 
+                                   @bind="nuevaOrden.MontoTotal" readonly />
+                        </div>
+                    </div>
+                </div>
+                
+                <hr class="mb-4 text-muted"/>
+
+                <div class="d-flex justify-content-end">
+                    <a href="/administrar-ordenes" class="btn btn-secondary px-4 me-2 shadow-sm">Cancelar</a>
+                    <button type="submit" class="btn btn-success px-4 shadow-sm" disabled="@(!nuevaOrden.Lineas.Any() || nuevaOrden.Lineas.Any(l => l.Producto == null) || nuevaOrden.Cliente == null || nuevaOrden.Empleado == null)">
+                        <i class="bi bi-check-circle me-1"></i> Guardar Orden
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Buscar Producto -->
+@if (mostrarModal)
+{
+    <div class="modal fade show d-block" style="background-color: rgba(0,0,0,0.5);" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-header bg-primary text-white py-3">
+                    <h5 class="modal-title fw-bold"><i class="bi bi-search me-2"></i>Buscador de Productos</h5>
+                    <button type="button" class="btn-close btn-close-white" @onclick="CerrarModal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="input-group mb-4 shadow-sm">
+                        <span class="input-group-text bg-light"><i class="bi bi-funnel text-secondary"></i></span>
+                        <input type="text" class="form-control" placeholder="Escriba el nombre del producto para buscar..." 
+                               @bind="textoBusqueda" @bind:event="oninput" @onkeyup="FiltrarProductos" />
+                        <button class="btn btn-primary px-4" type="button" @onclick="FiltrarProductos">
+                            Buscar
+                        </button>
+                    </div>
+
+                    <div class="table-responsive border rounded-3 bg-white" style="max-height: 300px;">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light sticky-top">
+                                <tr>
+                                    <th class="text-center" style="width: 100px;">Código</th>
+                                    <th>Nombre del Producto</th>
+                                    <th class="text-end" style="width: 150px;">Precio Unitario</th>
+                                    <th class="text-center" style="width: 120px;">Selección</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (productosFiltrados.Any())
+                                {
+                                    @foreach (var prod in productosFiltrados)
+                                    {
+                                        <tr>
+                                            <td class="text-center"><span class="badge bg-secondary">#@prod.Id</span></td>
+                                            <td class="fw-semibold text-dark">@prod.Nombre</td>
+                                            <td class="text-end fw-bold text-success">@prod.PrecioUnitario.ToString("C2")</td>
+                                            <td class="text-center">
+                                                <button type="button" class="btn btn-sm btn-success px-3 rounded-pill shadow-sm" 
+                                                        @onclick="() => SeleccionarProducto(prod)">
+                                                    Seleccionar
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="4" class="text-center py-4 text-muted">
+                                            <i class="bi bi-exclamation-triangle me-2"></i>No se encontraron productos coincidentes.
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light py-2">
+                    <button type="button" class="btn btn-secondary px-4 shadow-sm" @onclick="CerrarModal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Modal para Buscar Cliente -->
+@if (mostrarModalCliente)
+{
+    <div class="modal fade show d-block" style="background-color: rgba(0,0,0,0.5);" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-header bg-primary text-white py-3">
+                    <h5 class="modal-title fw-bold"><i class="bi bi-person me-2"></i>Buscador de Clientes</h5>
+                    <button type="button" class="btn-close btn-close-white" @onclick="CerrarModalCliente"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="input-group mb-3 shadow-sm">
+                        <span class="input-group-text bg-light"><i class="bi bi-funnel text-secondary"></i></span>
+                        <input type="text" class="form-control" placeholder="Escriba el nombre, apellido o DNI del cliente..." 
+                               @bind="textoBusquedaCliente" @bind:event="oninput" @onkeyup="FiltrarClientes" />
+                        <button class="btn btn-primary px-3" type="button" @onclick="FiltrarClientes">
+                            Buscar
+                        </button>
+                    </div>
+
+                    <div class="table-responsive border rounded-3 bg-white" style="max-height: 250px;">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light sticky-top">
+                                <tr>
+                                    <th class="text-center" style="width: 120px;">DNI</th>
+                                    <th>Nombre</th>
+                                    <th>Apellido Paterno</th>
+                                    <th class="text-center" style="width: 120px;">Selección</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (clientesFiltrados.Any())
+                                {
+                                    @foreach (var cli in clientesFiltrados)
+                                    {
+                                        <tr>
+                                            <td class="text-center"><span class="badge bg-light text-secondary border">@cli.DNI</span></td>
+                                            <td class="fw-semibold text-dark">@cli.Nombre</td>
+                                            <td class="text-dark">@cli.ApellidoPaterno</td>
+                                            <td class="text-center">
+                                                <button type="button" class="btn btn-sm btn-success px-3 rounded-pill shadow-sm" 
+                                                        @onclick="() => SeleccionarCliente(cli)">
+                                                    Seleccionar
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="4" class="text-center py-4 text-muted">
+                                            <i class="bi bi-exclamation-triangle me-2"></i>No se encontraron clientes.
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light py-2">
+                    <button type="button" class="btn btn-secondary px-4 shadow-sm" @onclick="CerrarModalCliente">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Modal para Buscar Empleado -->
+@if (mostrarModalEmpleado)
+{
+    <div class="modal fade show d-block" style="background-color: rgba(0,0,0,0.5);" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-header bg-primary text-white py-3">
+                    <h5 class="modal-title fw-bold"><i class="bi bi-briefcase me-2"></i>Buscador de Empleados</h5>
+                    <button type="button" class="btn-close btn-close-white" @onclick="CerrarModalEmpleado"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="input-group mb-3 shadow-sm">
+                        <span class="input-group-text bg-light"><i class="bi bi-funnel text-secondary"></i></span>
+                        <input type="text" class="form-control" placeholder="Escriba el nombre, apellido o DNI del empleado..." 
+                               @bind="textoBusquedaEmpleado" @bind:event="oninput" @onkeyup="FiltrarEmpleados" />
+                        <button class="btn btn-primary px-3" type="button" @onclick="FiltrarEmpleados">
+                            Buscar
+                        </button>
+                    </div>
+
+                    <div class="table-responsive border rounded-3 bg-white" style="max-height: 250px;">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light sticky-top">
+                                <tr>
+                                    <th class="text-center" style="width: 120px;">DNI</th>
+                                    <th>Nombre</th>
+                                    <th>Apellido Paterno</th>
+                                    <th class="text-center" style="width: 120px;">Selección</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (empleadosFiltrados.Any())
+                                {
+                                    @foreach (var emp in empleadosFiltrados)
+                                    {
+                                        <tr>
+                                            <td class="text-center"><span class="badge bg-light text-secondary border">@emp.DNI</span></td>
+                                            <td class="fw-semibold text-dark">@emp.Nombre</td>
+                                            <td class="text-dark">@emp.ApellidoPaterno</td>
+                                            <td class="text-center">
+                                                <button type="button" class="btn btn-sm btn-success px-3 rounded-pill shadow-sm" 
+                                                        @onclick="() => SeleccionarEmpleado(emp)">
+                                                    Seleccionar
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="4" class="text-center py-4 text-muted">
+                                            <i class="bi bi-exclamation-triangle me-2"></i>No se encontraron empleados.
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light py-2">
+                    <button type="button" class="btn btn-secondary px-4 shadow-sm" @onclick="CerrarModalEmpleado">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private OrdenVenta nuevaOrden = new OrdenVenta() { FechaHora = DateTime.Now };
+    
+    // Lista de todos los productos y productos filtrados
+    private List<Producto> todosLosProductos = new();
+    private List<Producto> productosFiltrados = new();
+    
+    // Variables para el control del Modal de Productos
+    private bool mostrarModal = false;
+    private string textoBusqueda = "";
+    private LineaOrdenVenta? lineaActiva;
+
+    // Variables para el control del Modal de Clientes
+    private bool mostrarModalCliente = false;
+    private string textoBusquedaCliente = "";
+    private List<Cliente> todosLosClientes = new();
+    private List<Cliente> clientesFiltrados = new();
+
+    // Variables para el control del Modal de Empleados
+    private bool mostrarModalEmpleado = false;
+    private string textoBusquedaEmpleado = "";
+    private List<Empleado> todosLosEmpleados = new();
+    private List<Empleado> empleadosFiltrados = new();
+
+    protected override void OnInitialized()
+    {
+        todosLosProductos = Producto.ObtenerProductosEstaticos();
+        productosFiltrados = new List<Producto>(todosLosProductos);
+        
+        todosLosClientes = Cliente.ObtenerClientesEstaticos();
+        clientesFiltrados = new List<Cliente>(todosLosClientes);
+
+        todosLosEmpleados = Empleado.ObtenerEmpleadosEstaticos();
+        empleadosFiltrados = new List<Empleado>(todosLosEmpleados);
+        
+        // Inicializar la orden con una primera línea vacía para facilitar la interacción
+        AgregarLinea();
+    }
+
+    private void AgregarLinea()
+    {
+        int siguienteNumeroLinea = nuevaOrden.Lineas.Any() ? nuevaOrden.Lineas.Max(l => l.NumeroLinea) + 1 : 1;
+        
+        nuevaOrden.Lineas.Add(new LineaOrdenVenta
+        {
+            NumeroLinea = siguienteNumeroLinea,
+            Cantidad = 1,
+            PrecioUnitario = 0.00m
+        });
+        
+        RecalcularTotal();
+    }
+
+    private void EliminarLinea(LineaOrdenVenta linea)
+    {
+        nuevaOrden.Lineas.Remove(linea);
+        
+        // Reordenar los números de línea correlativos
+        int correlativo = 1;
+        foreach (var l in nuevaOrden.Lineas)
+        {
+            l.NumeroLinea = correlativo++;
+        }
+        
+        RecalcularTotal();
+    }
+
+    private void RecalcularTotal()
+    {
+        nuevaOrden.MontoTotal = nuevaOrden.Lineas.Sum(l => l.Subtotal);
+    }
+
+    private void ActualizarCantidad(LineaOrdenVenta line, ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out int cant) && cant > 0)
+        {
+            line.Cantidad = cant;
+        }
+        else
+        {
+            line.Cantidad = 1;
+        }
+        RecalcularTotal();
+    }
+
+    private void AbrirBuscadorProducto(LineaOrdenVenta line)
+    {
+        lineaActiva = line;
+        textoBusqueda = "";
+        productosFiltrados = new List<Producto>(todosLosProductos);
+        mostrarModal = true;
+    }
+
+    private void CerrarModal()
+    {
+        mostrarModal = false;
+        lineaActiva = null;
+    }
+
+    private void FiltrarProductos()
+    {
+        if (string.IsNullOrWhiteSpace(textoBusqueda))
+        {
+            productosFiltrados = new List<Producto>(todosLosProductos);
+        }
+        else
+        {
+            productosFiltrados = todosLosProductos
+                .Where(p => p.Nombre.Contains(textoBusqueda, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+    }
+
+    private void SeleccionarProducto(Producto producto)
+    {
+        if (lineaActiva != null)
+        {
+            lineaActiva.Producto = producto;
+            lineaActiva.PrecioUnitario = producto.PrecioUnitario;
+            
+            RecalcularTotal();
+            CerrarModal();
+        }
+    }
+
+    // Buscador de Clientes
+    private void AbrirBuscadorCliente()
+    {
+        textoBusquedaCliente = "";
+        clientesFiltrados = new List<Cliente>(todosLosClientes);
+        mostrarModalCliente = true;
+    }
+
+    private void CerrarModalCliente()
+    {
+        mostrarModalCliente = false;
+    }
+
+    private void FiltrarClientes()
+    {
+        if (string.IsNullOrWhiteSpace(textoBusquedaCliente))
+        {
+            clientesFiltrados = new List<Cliente>(todosLosClientes);
+        }
+        else
+        {
+            clientesFiltrados = todosLosClientes
+                .Where(c => c.Nombre.Contains(textoBusquedaCliente, StringComparison.OrdinalIgnoreCase)
+                         || c.ApellidoPaterno.Contains(textoBusquedaCliente, StringComparison.OrdinalIgnoreCase)
+                         || c.DNI.Contains(textoBusquedaCliente, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+    }
+
+    private void SeleccionarCliente(Cliente cliente)
+    {
+        nuevaOrden.Cliente = cliente;
+        CerrarModalCliente();
+    }
+
+    // Buscador de Empleados
+    private void AbrirBuscadorEmpleado()
+    {
+        textoBusquedaEmpleado = "";
+        empleadosFiltrados = new List<Empleado>(todosLosEmpleados);
+        mostrarModalEmpleado = true;
+    }
+
+    private void CerrarModalEmpleado()
+    {
+        mostrarModalEmpleado = false;
+    }
+
+    private void FiltrarEmpleados()
+    {
+        if (string.IsNullOrWhiteSpace(textoBusquedaEmpleado))
+        {
+            empleadosFiltrados = new List<Empleado>(todosLosEmpleados);
+        }
+        else
+        {
+            empleadosFiltrados = todosLosEmpleados
+                .Where(e => e.Nombre.Contains(textoBusquedaEmpleado, StringComparison.OrdinalIgnoreCase)
+                         || e.ApellidoPaterno.Contains(textoBusquedaEmpleado, StringComparison.OrdinalIgnoreCase)
+                         || e.DNI.Contains(textoBusquedaEmpleado, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+    }
+
+    private void SeleccionarEmpleado(Empleado empleado)
+    {
+        nuevaOrden.Empleado = empleado;
+        CerrarModalEmpleado();
+    }
+
+    private void GuardarOrden()
+    {
+        // Solo guardamos si hay líneas, todas tienen un producto seleccionado, y se seleccionó Cliente y Empleado
+        if (nuevaOrden.Lineas.Any() 
+            && !nuevaOrden.Lineas.Any(l => l.Producto == null)
+            && nuevaOrden.Cliente != null
+            && nuevaOrden.Empleado != null)
+        {
+            OrdenVenta.AgregarOrden(nuevaOrden);
+            NavigationManager.NavigateTo("/administrar-ordenes");
+        }
+    }
+}
